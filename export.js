@@ -133,7 +133,9 @@ function gridTable(gr){const kids=[...gr.children].filter(c=>!isHidden(c,getComp
  for(let i=0;i<kids.length;i+=2){const cells=[kids[i],kids[i+1]].map((c,j)=>{let blocks=c?parasOf(c.childNodes,c):[];if(!blocks.length){const p=newPara(gr);p.runs.push(Object.assign(runOf(' ',gr),{t:' '}));blocks=[p]}
   return {col:j,span:1,rspan:1,b:{t:D,r:D,b:D,l:D},v:'top',blocks,w}});rows.push({h:(kids[i]?kids[i].getBoundingClientRect().height:20),cells})}
  return {type:'table',box:true,cols:[w,w],rows}}
-function buildModel(){const doc=document.getElementById('doc');return parasOf(doc.childNodes,doc)}
+function buildModel(){const doc=document.getElementById('doc');const m=parasOf(doc.childNodes,doc);
+ /* 표 바로 아래 문단은 표에 붙지 않도록 여백(약 6pt)을 둔다 */
+ m.forEach((b,i)=>{if(i>0&&b.type==='p'&&m[i-1].type==='table')b.before=Math.max(b.before||0,8)});return m}
 
 /* 인쇄와 같은 상태로 만들어 읽기 */
 async function withPrintState(fn){const main=document.getElementById('main');const z=main.style.zoom;const wasPv=document.body.classList.contains('pv');
