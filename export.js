@@ -48,13 +48,29 @@ function listParas(lst){const out=[];lst.querySelectorAll(':scope>.it').forEach(
 function lines(items){const s=items.map(el=>({el,r:el.getBoundingClientRect()})).sort((a,b)=>a.r.top-b.r.top||a.r.left-b.r.left);const g=[];
  s.forEach(it=>{const x=g.find(q=>Math.min(q.b,it.r.bottom)-Math.max(q.t,it.r.top)>Math.min(q.b-q.t,it.r.height)*0.4);if(x){x.items.push(it);x.t=Math.min(x.t,it.r.top);x.b=Math.max(x.b,it.r.bottom)}else g.push({t:it.r.top,b:it.r.bottom,items:[it]})});
  g.forEach(q=>q.items.sort((a,b)=>a.r.left-b.r.left));return g}
-function flexParas(n){const kids=[...n.children].filter(c=>{const cs=getComputedStyle(c);return !isHidden(c,cs)});
+function flexParas(n){if(n.matches('.g,.ck'))return [gridCheckTable(n)];const kids=[...n.children].filter(c=>{const cs=getComputedStyle(c);return !isHidden(c,cs)});
  if(!kids.length)return parasOf(n.childNodes,n);
  const jc=getComputedStyle(n).justifyContent;const sep=n.matches('.g,.ck')?'    ':n.matches('.hs,.pc,.tg,.sc>div,.row,.tl')?'':' ';
  const out=[];lines(kids).forEach(g=>{
   if(g.items.length===1&&!/^inline/.test(getComputedStyle(g.items[0].el).display)){const sub=parasOf([g.items[0].el],n);if(jc==='center')sub.forEach(x=>{if(x.type==='p')x.align='center'});out.push(...sub);return}
   const p=newPara(n);if(jc==='center')p.align='center';
   g.items.forEach((it,i)=>{if(i&&sep)p.runs.push(runOf(sep,n));addInline(it.el,p)});trimP(p);if(p.runs.length)out.push(p)});return out}
+/* 체크박스 격자(.g/.ck): 화면의 열 위치대로 테두리 없는 표로 만들어 세로줄을 맞춘다 */
+function gridCheckTable(n){
+ const nr=n.getBoundingClientRect();
+ const items=[...n.children].filter(c=>!isHidden(c,getComputedStyle(c))).map(el=>({el,r:el.getBoundingClientRect()}));
+ const wide=it=>it.r.width>nr.width*0.6;
+ const starts=cluster(items.filter(it=>!wide(it)).map(it=>Math.max(0,it.r.left-nr.left)));
+ if(!starts.length)starts.push(0);starts[0]=0;
+ const cols=starts.map((s,i)=>(i+1<starts.length?starts[i+1]:Math.max(nr.width,s+40))-s);
+ const nc=cols.length,NB={t:null,r:null,b:null,l:null};
+ const mkP=el=>{const p=newPara(n);if(el)addInline(el,p);trimP(p);if(!p.runs.length)p.runs.push(Object.assign(runOf(' ',n),{t:' '}));return p};
+ const rows=lines(items.map(i=>i.el)).map(g=>{const cells=[];const used={};
+  g.items.forEach(it=>{const w=wide(it);const col=w?0:Math.min(nc-1,near(starts,it.r.left-nr.left));
+   cells.push({col,span:w?nc:1,rspan:1,b:NB,v:'center',blocks:[mkP(it.el)],w:0});for(let k=0;k<(w?nc:1);k++)used[col+k]=1});
+  for(let c=0;c<nc;c++)if(!used[c])cells.push({col:c,span:1,rspan:1,b:NB,v:'center',blocks:[mkP(null)],w:0});
+  cells.sort((a,b)=>a.col-b.col);return {h:Math.max(12,g.b-g.t),cells}});
+ return {type:'table',box:true,plain:true,cols,rows}}
 function parasOf(nodes,styleEl){
  const out=[];let cur=null;const flush=()=>{if(cur){trimP(cur);if(cur.runs.length)out.push(cur);cur=null}};const get=()=>cur||(cur=newPara(styleEl));
  for(const n of nodes){
@@ -140,7 +156,7 @@ function dxTable(tb){const sum=tb.cols.reduce((a,b)=>a+b,0);const f=sum>TEXT_W_P
   ents.sort((a,b)=>a.col-b.col);
   const cells=ents.map(e=>{const c=e.cont||e.c;const span=c.span;const w=cols.slice(c.col,c.col+span).reduce((a,b)=>a+b,0);
    const vm=c.rspan>1?(e.cont?'<w:vMerge/>':'<w:vMerge w:val="restart"/>'):'';
-   const body=e.cont?'<w:p/>':c.blocks.map(b=>b.type==='table'?dxTable(b)+'<w:p/>':dxPara(b,f)).join('')||'<w:p/>';
+   const body=e.cont?'<w:p/>':c.blocks.map(b=>b.type==='table'?dxTable(b)+'<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/></w:pPr></w:p>':dxPara(b,f)).join('')||'<w:p/>';
    return '<w:tc><w:tcPr><w:tcW w:w="'+w+'" w:type="dxa"/>'+(span>1?'<w:gridSpan w:val="'+span+'"/>':'')+vm+dxBorders(c.b)+'<w:vAlign w:val="'+(c.v==='top'?'top':'center')+'"/></w:tcPr>'+body+'</w:tc>'}).join('');
   return '<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="'+Math.max(200,tw(r.h*f))+'" w:hRule="atLeast"/></w:trPr>'+cells+'</w:tr>'}).join('');
  return '<w:tbl><w:tblPr><w:tblW w:w="'+total+'" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="15" w:type="dxa"/><w:left w:w="57" w:type="dxa"/><w:bottom w:w="15" w:type="dxa"/><w:right w:w="57" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>'+cols.map(w=>'<w:gridCol w:w="'+w+'"/>').join('')+'</w:tblGrid>'+rowsXml+'</w:tbl>'}
@@ -188,7 +204,7 @@ const UNI=(()=>{const L={st:'solid',w:1,c:'000000'};return {t:L,r:L,b:L,l:L}})()
 function hxTable(tb,ctx){const sum=tb.cols.reduce((a,b)=>a+b,0);const f=sum>TEXT_W_PX?TEXT_W_PX/sum:1;const cols=tb.cols.map(w=>Math.max(300,Math.round(w*f*HU)));const total=cols.reduce((a,b)=>a+b,0);
  const rowH=tb.rows.map(r=>Math.max(400,Math.round(r.h*f*HU)));const totalH=rowH.reduce((a,b)=>a+b,0);
  const rows=tb.rows.map((r,ri)=>'<hp:tr>'+r.cells.map(c=>{const w=cols.slice(c.col,c.col+c.span).reduce((a,b)=>a+b,0);let h=0;for(let k=0;k<c.rspan&&ri+k<rowH.length;k++)h+=rowH[ri+k];
-  const inner=c.blocks.map(b=>b.type==='table'?'<hp:p id="2147483648" paraPrIDRef="'+(ctx.paraBase+ctx.para(newFlat()))+'" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="'+ctx.charBase+'"><hp:t> </hp:t></hp:run><hp:linesegarray><hp:lineseg textpos="0" vertpos="0" vertsize="1000" textheight="1000" baseline="850" spacing="600" horzpos="0" horzsize="'+w+'" flags="393216"/></hp:linesegarray></hp:p>':hxPara(b,ctx,w-300)).join('');
+  const inner=c.blocks.map(b=>b.type==='table'?hxTable(b,ctx):hxPara(b,ctx,w-300)).join('');
   return '<hp:tc name="" header="0" hasMargin="0" protect="0" editable="0" dirty="0" borderFillIDRef="'+(ctx.bfBase+ctx.bf(c.b))+'"><hp:subList id="" textDirection="HORIZONTAL" lineWrap="BREAK" vertAlign="'+(c.v==='top'?'TOP':'CENTER')+'" linkListIDRef="0" linkListNextIDRef="0" textWidth="0" textHeight="0" hasTextRef="0" hasNumRef="0">'+inner+'</hp:subList><hp:cellAddr colAddr="'+c.col+'" rowAddr="'+ri+'"/><hp:cellSpan colSpan="'+c.span+'" rowSpan="'+c.rspan+'"/><hp:cellSz width="'+w+'" height="'+h+'"/><hp:cellMargin left="100" right="100" top="30" bottom="30"/></hp:tc>'}).join('')+'</hp:tr>').join('');
  const id=++hxTblId;
  const tbl='<hp:tbl id="'+id+'" zOrder="'+(id-1975000000)+'" numberingType="TABLE" textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" pageBreak="CELL" repeatHeader="0" rowCnt="'+tb.rows.length+'" colCnt="'+cols.length+'" cellSpacing="0" borderFillIDRef="'+ctx.bfBase+'" noAdjust="0"><hp:sz width="'+total+'" widthRelTo="ABSOLUTE" height="'+totalH+'" heightRelTo="ABSOLUTE" protect="0"/><hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="PARA" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/><hp:outMargin left="0" right="0" top="0" bottom="0"/><hp:inMargin left="100" right="100" top="30" bottom="30"/>'+rows+'</hp:tbl>';
