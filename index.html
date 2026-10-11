@@ -33,7 +33,7 @@ body{margin:0;font-family:"Malgun Gothic","맑은 고딕","Noto Sans KR",sans-se
 .sumstrip span.l{display:block;margin-top:5px;color:var(--muted);font-size:12px;font-weight:700}
 .sec,.h{scroll-margin-top:84px}
 @media(max-width:1040px){#toc{display:none}}
-.sheet{width:210mm;margin:0;background:#fff;padding:36pt 20mm 60pt;border-radius:3px;box-shadow:0 1px 2px rgba(32,44,40,.1),0 18px 44px rgba(32,44,40,.14);position:relative}
+.sheet{width:210mm;margin:0;background:#fff;padding:30pt 20mm 60pt;border-radius:3px;box-shadow:0 1px 2px rgba(32,44,40,.1),0 18px 44px rgba(32,44,40,.14);position:relative}
 .hdr{text-align:center;color:#f00;font-weight:bold;font-style:italic;font-size:8.5pt;margin-bottom:26pt}
 table{border-collapse:collapse}
 .red{color:#f00}.b{font-weight:bold}.u{text-decoration:underline}
@@ -199,8 +199,7 @@ input.docname:focus{border-color:var(--accent);background:#fff;box-shadow:none}
  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  tr,.blk,.gr>div{break-inside:avoid}
 }
-@page{size:A4;margin:24mm 20mm 20mm;
- @top-center{content:"▣ 2026학년도 학업성적관리지침 변경 사항 반영 ▣";color:#f00;font-weight:bold;font-style:italic;font-size:8.5pt}
+@page{size:A4;margin:18mm 20mm 20mm;
  @bottom-center{content:"- " counter(page) " -";font-size:9.5pt}}
 </style>
 </head>
@@ -387,8 +386,7 @@ const HI=(k,d)=>`<input type="text" class="hin" data-k="${k}" data-d="${esc(d)}"
 const SEC=(n,t)=>`<div class="sec"><div class="n">${n}</div><div class="t">${HI('sec'+n,t)}</div></div>`;
 const HDR0='▣ 2026학년도 학업성적관리지침 변경 사항 반영 ▣';
 function build(){
- return `<div class="hdr">${HI('hdr',HDR0)}</div>
-<div class="tl" style="font-size:17.5pt;line-height:22pt;letter-spacing:-.2pt;margin-bottom:18pt">${HI('title','2026학년도 1학기 교수학습평가계획서')}</div>
+ return `<div class="tl" style="font-size:17.5pt;line-height:22pt;letter-spacing:-.2pt;margin-bottom:18pt">${HI('title','2026학년도 1학기 교수학습평가계획서')}</div>
 ${SEC('Ⅰ','교수학습·평가 방법')}
 <div class="red b" style="font-size:10.5pt;margin:12pt 0 8pt;line-height:16pt">▶ <input type="text" class="hin" data-k="hnote.pre" data-d="" placeholder="1학년 한국사1" style="display:inline-block;width:auto;min-width:8em;vertical-align:baseline" spellcheck="false"> 시수 누계 기준(<input type="text" class="hin" data-k="info.credit" data-d="" placeholder="3" inputmode="numeric" style="display:inline-block;width:auto;min-width:1.2em;text-align:center;vertical-align:baseline" spellcheck="false">학점 <span data-c="s.target">–</span>시수)</div><div class="warn noprint" data-c="hwarn"></div>
 <div>${S.periods.map(periodBlock).join('')}</div>
@@ -509,7 +507,7 @@ doc.addEventListener('click',e=>{const b=e.target.closest('button[data-act]');if
  else if(a==='delGrade')rm(S.perfS[p].grades,q);
  save();const y=scrollY;render();scrollTo(0,y)});
 function setPv(on){document.body.classList.toggle('pv',on);doc.inert=on;document.getElementById('segE').classList.toggle('on',!on);document.getElementById('segP').classList.toggle('on',on);schedBreaks();scrollTo(0,0)}
-function applyHdr(){let st=document.getElementById('pagehdr');if(!st){st=document.createElement('style');st.id='pagehdr';document.head.appendChild(st)}const t=String(V.hdr!==undefined?V.hdr:HDR0).replace(/["\\\n]/g,' ');st.textContent='@page{@top-center{content:"'+t+'";color:#f00;font-weight:bold;font-style:italic;font-size:8.5pt}}'}
+function applyHdr(){}
 function buildToc(){const box=document.getElementById('tocl');if(!box)return;const items=[['기본 정보',()=>scrollTo({top:0,behavior:'smooth'})]];
  doc.querySelectorAll('.sec .t input,.h input').forEach(i=>{items.push([i.value,()=>i.closest('.sec,.h').scrollIntoView({behavior:'smooth',block:'start'})])});
  box.innerHTML='';items.forEach(([t,f])=>{const a=document.createElement('a');a.textContent=t;a.onclick=f;box.appendChild(a)})}
@@ -639,7 +637,7 @@ function drawBreaks(){
  const edit=pos();
  document.body.classList.add('pm');const pm=pos();document.body.classList.remove('pm');
  const ok=pm.map(p=>p.b-p.t>0.5);
- const PH=253*96/25.4;
+ const PH=259*96/25.4;
  const ti=units.findIndex(e=>e.classList.contains('tl'));if(ti<0)return;
  const start=pm[ti].t;let end=0;pm.forEach((p,i)=>{if(ok[i]&&p.b>end)end=p.b});
  const AV='.blk,tr,.gr>div',HD='.sec,.h';
