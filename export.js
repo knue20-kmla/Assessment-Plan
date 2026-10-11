@@ -148,7 +148,7 @@ function hxCtx(){const chars=[],paras=[],bfs=[];const ck={},pk={},bk={};
   para(p){const k=[p.align,Math.round(p.left),Math.round(p.hang),Math.round(p.first),Math.round(p.before),Math.round(p.after),Math.round(p.line*20)].join('|');if(pk[k]==null){pk[k]=paras.length;paras.push(p)}return pk[k]},
   bf(b){const k=['t','r','b','l'].map(s=>b[s]?b[s].st+b[s].w.toFixed(1)+b[s].c:'-').join('|');if(bk[k]==null){bk[k]=bfs.length;bfs.push(b)}return bk[k]}}}
 const mmList=[0.1,0.12,0.15,0.2,0.25,0.3,0.4,0.5,0.6,0.7,1.0];
-const hwMm=px=>{const mm=px*0.2646;let b=mmList[0];mmList.forEach(v=>{if(Math.abs(v-mm)<Math.abs(b-mm))b=v});return b.toFixed(b>=1?1:2).replace(/0$/,'')+' mm'};
+const hwMm=px=>{const mm=px*0.2646;let b=mmList[0];mmList.forEach(v=>{if(Math.abs(v-mm)<Math.abs(b-mm))b=v});return String(b)+' mm'};
 const hwType={solid:'SOLID',dashed:'DASH',double:'DOUBLE_SLIM',dotted:'DOT'};
 function hxHeader(base,ctx,c0,p0,b0){let h=base;
  const cx=ctx.chars.map((r,i)=>'<hh:charPr id="'+(c0+i)+'" height="'+Math.max(100,Math.round(r.sz*100))+'" textColor="#'+r.c+'" shadeColor="none" useFontSpace="0" useKerning="0" symMark="NONE" borderFillIDRef="1"><hh:fontRef hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/><hh:ratio hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:spacing hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/><hh:relSz hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:offset hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/>'+(r.i?'<hh:italic/>':'')+(r.b?'<hh:bold/>':'')+'<hh:underline type="'+(r.u?'BOTTOM':'NONE')+'" shape="SOLID" color="#000000"/><hh:strikeout shape="3D" color="#000000"/><hh:outline type="NONE"/><hh:shadow type="NONE" color="#C0C0C0" offsetX="10" offsetY="10"/></hh:charPr>').join('');
@@ -182,21 +182,27 @@ async function buildHwpx(model){await loadScript('jszip');await loadScript('hwpx
  ctx.char({t:'',sz:10,b:false,i:false,u:false,c:'000000'}); // index 0 = 기본 글자
  ctx.bf({t:null,r:null,b:null,l:null});               // index 0 = 테두리 없음
  const W=48190;
- let secPr=window.HWPX_SECPR.replace(/<hp:margin header="\d+" footer="\d+" gutter="0" left="\d+" right="\d+" top="\d+" bottom="\d+"\/>/,'<hp:margin header="2834" footer="2834" gutter="0" left="5669" right="5669" top="5102" bottom="5669"/>');
- const hp0=ctx.para(newFlat());
- const head='<hp:p id="0" paraPrIDRef="'+(p0+ctx.para(Object.assign(newFlat(),{align:'center',after:6}))) +'" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="'+(c0+ctx.char({t:'',sz:8.5,b:true,i:true,u:false,c:'FF0000'}))+'">'+secPr+'<hp:ctrl><hp:colPr id="" type="NEWSPAPER" layout="LEFT" colCount="1" sameSz="1" sameGap="0"/></hp:ctrl><hp:t>'+esc(hdrText())+'</hp:t></hp:run><hp:linesegarray><hp:lineseg textpos="0" vertpos="0" vertsize="850" textheight="850" baseline="722" spacing="510" horzpos="0" horzsize="'+W+'" flags="393216"/></hp:linesegarray></hp:p>';
- const body=model.map(b=>b.type==='table'?hxTable(b,ctx):hxPara(b,ctx,W)).join('');
+ const F=window.HWPX_FILES;
+ /* 원본 양식의 쪽 설정(secPr)·쪽번호·머리글 run 을 첫 문단에 그대로 붙인다 */
+ let ctl=window.HWPX_RUN1+window.HWPX_RUN2;
+ const ht=hdrText(),cut=Math.max(1,ht.length-1);
+ ctl=ctl.replace('@@H1@@',()=>esc(ht.slice(0,cut))).replace('@@H2@@',()=>esc(ht.slice(cut)));
+ const items=model.slice();
+ if(!items.length||items[0].type!=='p')items.unshift(Object.assign(newFlat(),{runs:[{t:' ',sz:10,b:false,i:false,u:false,c:'000000'}]}));
+ let injected=false;
+ const body=items.map(b=>{if(b.type==='table')return hxTable(b,ctx);let x=hxPara(b,ctx,W);
+  if(!injected){x=x.replace(/^<hp:p [^>]*>/,m=>m.replace(/ id="\d+"/,' id="0"')+ctl);injected=true}return x}).join('');
  const nsDecl='xmlns:ha="http://www.hancom.co.kr/hwpml/2011/app" xmlns:hp="http://www.hancom.co.kr/hwpml/2011/paragraph" xmlns:hp10="http://www.hancom.co.kr/hwpml/2016/paragraph" xmlns:hs="http://www.hancom.co.kr/hwpml/2011/section" xmlns:hc="http://www.hancom.co.kr/hwpml/2011/core" xmlns:hh="http://www.hancom.co.kr/hwpml/2011/head" xmlns:hhs="http://www.hancom.co.kr/hwpml/2011/history" xmlns:hm="http://www.hancom.co.kr/hwpml/2011/master-page" xmlns:hpf="http://www.hancom.co.kr/schema/2011/hpf" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf/" xmlns:ooxmlchart="http://www.hancom.co.kr/hwpml/2016/ooxmlchart" xmlns:hwpunitchar="http://www.hancom.co.kr/hwpml/2016/HwpUnitChar" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:config="urn:oasis:names:tc:opendocument:xmlns:config:1.0"';
- const section='<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><hs:sec '+nsDecl+'>'+head+body+'</hs:sec>';
+ const section='<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><hs:sec '+nsDecl+'>'+body+'</hs:sec>';
  const header=hxHeader(base,ctx,c0,p0,b0);
- const title=esc(safeName());
- const hpf='<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><opf:package '+nsDecl+' version="" unique-identifier="" id=""><opf:metadata><opf:title>'+title+'</opf:title><opf:language>ko</opf:language><opf:meta name="creator" content="text">Assessment Plan</opf:meta><opf:meta name="subject" content="text"/><opf:meta name="description" content="text"/><opf:meta name="CreatedDate" content="text">'+new Date().toISOString().replace(/\.\d+Z/,'Z')+'</opf:meta></opf:metadata><opf:manifest><opf:item id="header" href="Contents/header.xml" media-type="application/xml"/><opf:item id="section0" href="Contents/section0.xml" media-type="application/xml"/><opf:item id="settings" href="settings.xml" media-type="application/xml"/></opf:manifest><opf:spine><opf:itemref idref="header" linear="yes"/><opf:itemref idref="section0" linear="yes"/></opf:spine></opf:package>';
+ const hpf=F.hpf.replace('<opf:title/>','<opf:title>'+esc(safeName())+'</opf:title>');
  const Z=new JSZip();
  Z.file('mimetype','application/hwp+zip',{compression:'STORE'});
- Z.file('version.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><hv:HCFVersion xmlns:hv="http://www.hancom.co.kr/hwpml/2011/version" tagetApplication="WORDPROCESSOR" major="5" minor="1" micro="1" buildNumber="0" os="10" xmlVersion="1.5" application="Hancom Office Hangul" appVersion="12.30.0.6313 MAC64LEDarwin_25.3.0"/>');
+ Z.file('version.xml',F.version);
  Z.file('settings.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><ha:HWPApplicationSetting xmlns:ha="http://www.hancom.co.kr/hwpml/2011/app" xmlns:config="urn:oasis:names:tc:opendocument:xmlns:config:1.0"><ha:CaretPosition listIDRef="0" paraIDRef="0" pos="0"/></ha:HWPApplicationSetting>');
- Z.file('META-INF/container.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><ocf:container xmlns:ocf="urn:oasis:names:tc:opendocument:xmlns:container" xmlns:hpf="http://www.hancom.co.kr/schema/2011/hpf"><ocf:rootfiles><ocf:rootfile full-path="Contents/content.hpf" media-type="application/hwpml-package+xml"/><ocf:rootfile full-path="Preview/PrvText.txt" media-type="text/plain"/></ocf:rootfiles></ocf:container>');
- Z.file('META-INF/manifest.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><odf:manifest xmlns:odf="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0"/>');
+ Z.file('META-INF/container.xml',F.container);
+ Z.file('META-INF/manifest.xml',F.manifest);
+ Z.file('META-INF/container.rdf',F.rdf);
  Z.file('Preview/PrvText.txt',model.filter(b=>b.type==='p').slice(0,12).map(p=>p.runs.map(r=>r.t).join('')).join('\r\n'));
  Z.file('Contents/content.hpf',hpf);Z.file('Contents/header.xml',header);Z.file('Contents/section0.xml',section);
  return Z.generateAsync({type:'blob',mimeType:'application/hwp+zip',compression:'DEFLATE'})}
