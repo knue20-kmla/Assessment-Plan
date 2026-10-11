@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>교수학습평가계획서</title>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#eceee9;--ink:#1e2524;--muted:#68716f;--line:#d9dfd8;--accent:#236b5d;--accent-d:#174c42;--soft:#eef2ed}
+html{background:var(--bg)}
+body{margin:0;font-family:"Malgun Gothic","맑은 고딕","Noto Sans KR",sans-serif;color:#000;font-size:9pt}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px clamp(14px,3vw,40px);background:var(--soft);border-bottom:1px solid var(--line);font-family:"Segoe UI","Malgun Gothic",system-ui,sans-serif;font-size:14px;color:var(--ink)}
+.topbar .eyebrow{margin:0 0 2px;color:var(--accent);font-size:12px;font-weight:800}
+.topbar h1{margin:0;font-size:20px;font-weight:750}
+.tb-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.seg{display:flex;gap:4px;background:#e3e9e2;padding:4px;border-radius:8px}
+.seg button{min-height:34px;border:0;border-radius:6px;padding:0 16px;color:var(--muted);background:transparent;cursor:pointer;font:inherit}
+.seg button.on{color:var(--ink);background:#fff;box-shadow:0 6px 18px rgba(25,47,40,.12)}
+.topbar .ghost,.topbar .primary{min-height:38px;padding:0 14px;border-radius:7px;font:inherit;cursor:pointer;border:1px solid #cdd5cd;background:#fff;color:#35403e}
+.topbar .ghost:hover{border-color:var(--accent);color:var(--accent)}
+.topbar .ghost.danger:hover{border-color:#9e2f38;color:#9e2f38}
+.topbar .primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.topbar .primary:hover{background:var(--accent-d)}
+.layout{display:flex;gap:22px;justify-content:center;align-items:flex-start;padding:20px 16px 70px}
+#toc{position:sticky;top:84px;width:178px;flex:none;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 16px 40px rgba(32,44,40,.08);padding:12px 8px;font-family:"Segoe UI","Malgun Gothic",system-ui,sans-serif;font-size:13px;max-height:calc(100vh - 110px);overflow:auto}
+#toc p{margin:0 8px 8px;color:var(--accent);font-size:12px;font-weight:800}
+#toc a{display:block;padding:6px 8px;border-radius:6px;color:#35403e;cursor:pointer;line-height:1.35}
+#toc a:hover{background:var(--soft);color:var(--accent)}
+.main{min-width:0;flex:none;width:210mm}
+.sumstrip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;overflow:hidden;border:1px solid var(--line);border-radius:8px;background:var(--line);margin-bottom:14px;font-family:"Segoe UI","Malgun Gothic",system-ui,sans-serif}
+.sumstrip div{padding:12px 14px;background:#fff}
+.sumstrip b{display:block;font-size:22px;font-weight:800;line-height:1.1;color:var(--ink)}
+.sumstrip span.l{display:block;margin-top:5px;color:var(--muted);font-size:12px;font-weight:700}
+.sec,.h{scroll-margin-top:84px}
+@media(max-width:1040px){#toc{display:none}}
+.sheet{width:210mm;margin:0;background:#fff;padding:36pt 20mm 60pt;border-radius:3px;box-shadow:0 1px 2px rgba(32,44,40,.1),0 18px 44px rgba(32,44,40,.14);position:relative}
+.hdr{text-align:center;color:#f00;font-weight:bold;font-style:italic;font-size:8.5pt;margin-bottom:26pt}
+table{border-collapse:collapse}
+.red{color:#f00}.b{font-weight:bold}.u{text-decoration:underline}
+button.ctl{font:inherit;font-family:"Segoe UI","Malgun Gothic",system-ui,sans-serif;font-size:11px;padding:2px 9px;border:1px solid #cdd5cd;background:#fff;border-radius:6px;color:#35403e;cursor:pointer;margin:1px}
+button.ctl:hover{border-color:var(--accent);color:var(--accent)}
+input[type=text]{border:0;background:transparent;font:inherit;line-height:1.15;height:1.2em;width:100%;padding:0;outline:0;color:inherit;display:block;min-width:0}
+input[type=text]:hover,.ls:hover,.it .tx:hover{background:#f6faf8}
+input[type=text]:focus,.ls:focus{background:#eef6f2;box-shadow:inset 0 0 0 1px var(--accent)}
+.ls{outline:0;cursor:text;min-height:1.2em;word-break:break-all;white-space:pre-wrap}
+.ls>div{min-height:1.2em}
+.ls.m1>div,.ls.m2>div{position:relative;padding-left:8pt}
+.ls.m1>div:before,.ls.m2>div:before{content:"■";position:absolute;left:0;top:0;font-size:6pt;line-height:inherit}
+.ls.m2>div:before{content:"▪";font-size:9pt}
+.ls.hang>div{padding-left:14pt;text-indent:-14pt}
+.ph>div:only-child:has(>br:only-child):before,.ph>div:only-child:empty:before{content:attr(data-ph);color:#f00;font-weight:bold;pointer-events:none}
+.cb{display:inline-flex;align-items:center;gap:2pt;white-space:nowrap;cursor:pointer}
+.cb input[type=checkbox]{appearance:none;-webkit-appearance:none;width:7pt;height:7pt;border:.8pt solid #000;margin:0;background:transparent;flex:none}
+.cb input[type=checkbox]:checked{background:#000}
+.sec{display:flex;align-items:flex-end;height:25.6pt;margin-top:28pt;break-after:avoid}
+.sec .n{width:28pt;height:25.6pt;font-size:15pt;text-align:center;line-height:25.6pt}
+.sec .t{font-size:14pt;font-weight:bold;letter-spacing:.6pt;height:24pt;line-height:24pt;padding:0 6pt 0 7pt;border-bottom:2pt solid #000;flex:none}
+.h{font-size:14.5pt;font-weight:bold;letter-spacing:.7pt;line-height:20pt;margin-top:22pt;break-after:avoid}
+.p{padding-left:19.4pt;text-indent:-19.4pt;text-align:justify;font-size:10.5pt;line-height:17.5pt;margin:0 -4pt 0 5pt;letter-spacing:.05pt;word-break:keep-all}
+.p.s2{padding-left:41.5pt;text-indent:-23pt}
+.note{font-size:11pt;line-height:15pt}
+.blk{position:relative;break-inside:avoid}
+.blk .x{position:absolute;right:2pt;top:-1pt;z-index:2}
+.pt{width:100%;table-layout:fixed;border-top:1.5pt solid #000}
+.pt td{border:.5pt solid #000;padding:0;text-align:center;font-size:10pt;vertical-align:middle}
+.pt .hd td{height:25.6pt;font-weight:bold;line-height:11.5pt}
+.pt .dr td{font-size:9.5pt;line-height:10.5pt}
+.pt td.u{text-align:left;padding:2pt 3pt;font-size:9pt;line-height:12pt}
+.hs{display:flex;align-items:center;justify-content:center}
+.hs input{width:20pt;text-align:right}
+.m .lab{padding:3pt 0 2pt 7pt;font-size:9pt;text-decoration:underline;line-height:12pt}
+.m .bx{margin:0 4pt 0 6pt;border:.8pt dashed #000}
+.m .r{display:grid;grid-template-columns:108.7pt 1fr;border-bottom:.8pt dashed #000;font-size:9pt}
+.m .r:last-child{border-bottom:0}
+.m .r>div{padding:2pt 0}
+.m .r .k{display:flex;align-items:center;justify-content:center;border-right:.8pt dashed #000}
+.m .r .v{padding-left:5pt}
+.g{display:grid;grid-template-columns:88pt 90pt 91pt 1fr;width:100%}
+.g>*{height:12pt;display:flex;align-items:center}
+.sep{height:5pt;position:relative}
+.sep:before,.sep:after{content:"";position:absolute;left:0;right:0;border-top:1.5pt solid #000}
+.sep:before{top:.5pt}.sep:after{bottom:0}
+.addrow{margin:4pt 0}
+.rt{width:100%;table-layout:fixed;border-top:1.5pt solid #000;border-bottom:1.5pt solid #000}
+.rt td{border:.5pt solid #000;text-align:center;padding:0;font-size:8pt;line-height:11pt}.rt tr:nth-child(4) td{white-space:nowrap}
+.rt td.lb{font-weight:bold;font-size:9.5pt;line-height:12pt}
+.rt td.dl{border-left:1.5pt solid #000}
+.rt input[type=text]{text-align:center}
+.pc{display:flex;align-items:center;justify-content:center;gap:1pt}
+.sc{display:flex;flex-direction:column;align-items:center;line-height:11pt;padding:1pt 0}
+.sc>div{display:flex;align-items:center;justify-content:center}
+.sc input{width:22pt;text-align:right}
+.rt .nm .ls{text-align:center;padding:1pt}
+.tg{display:flex;align-items:center;justify-content:center;gap:2pt}
+.warn{color:#b3261e;font-size:12px;margin-top:4px;background:#fdf0ef;border-radius:6px;padding:3px 9px;font-family:"Segoe UI","Malgun Gothic",system-ui,sans-serif;display:inline-block}
+.warn:empty{display:none}
+.hin{font:inherit;color:inherit;letter-spacing:inherit;line-height:inherit;height:auto;width:100%;text-align:inherit}
+@supports (field-sizing:content){.hin{field-sizing:content;width:auto;min-width:3em;max-width:100%}}
+.hdr .hin{text-align:center;width:100%;field-sizing:fixed;font-weight:bold;font-style:italic;color:#f00}
+.sec .t .hin{font-weight:bold}
+.tl{display:flex;justify-content:center;align-items:baseline;white-space:pre}
+.gr{width:100%;border:.8pt dashed #000;display:grid;grid-template-columns:1fr 1fr;font-size:9pt;line-height:12pt}
+.gr>div{padding:3pt 4pt 4pt 6pt;border-right:.8pt dashed #000;border-bottom:.8pt dashed #000;min-width:0}
+.gr>div:nth-child(2n){border-right:0}
+.gr>div.last{border-bottom:0}
+.gt{border-collapse:collapse;font-size:11pt;line-height:15.5pt;width:100%;border-bottom:1.5pt solid #000;border-top:1.5pt solid #000;margin-top:5pt}
+.gt td{text-align:center;border-bottom:.5pt solid #000;padding:0;height:16.5pt;width:50%}
+.gt td:first-child{border-right:.5pt solid #000}
+.gt tr:first-child td{border-bottom:1.5pt solid #000}
+.gt tr:last-child td{border-bottom:0}
+.s5{width:100%;border-collapse:collapse;border-top:1.5pt solid #000}
+.s5 td{padding:2pt 4pt;border:.5pt solid #000;text-align:center;font-size:9pt;line-height:12pt;vertical-align:middle}
+.s5 td.t{text-align:left}
+.s5 tr{break-inside:avoid}
+.mb{border-bottom:1.5pt solid #000;font-size:9.5pt;line-height:15.6pt;padding:2pt 4pt 3pt 8pt}
+.mb .ttl{text-align:center;font-weight:bold;font-size:12pt;line-height:23pt;border-bottom:1.5pt solid #000;margin:0 -4pt 3pt -8pt}
+.mb .i{margin-left:4pt;padding-left:11pt;text-indent:-7pt}
+.rp{width:100%;table-layout:fixed;border:.8pt solid #000;margin:3pt 0 4pt}
+.rp td{border:.5pt solid #000;padding:0 2pt;font-size:10pt;line-height:12pt;height:12.9pt}
+.pf{width:100%;table-layout:fixed;border-top:1.5pt solid #000;border-bottom:1.5pt solid #000;margin-top:4pt}
+.pf td{border:.5pt solid #000;padding:0 2pt;font-size:9pt;line-height:12pt;vertical-align:middle}
+.pf td.lbl{text-align:center;font-size:9.5pt}
+.pf .ck{display:grid;align-items:center;padding-left:3pt;height:12pt}
+.pf td.dsh{border-bottom:.6pt dashed #000;padding:1pt 2pt}
+.ab{display:flex;gap:2pt;align-items:flex-start;border-bottom:.5pt solid #000;margin:0 -2pt}
+.ab:last-of-type{border-bottom:0}
+.ab .gl{width:20pt;flex:none;border-right:.5pt solid #000}
+.ab .gl input{text-align:center;color:#f00}
+.ab .ls{flex:1}
+.tt{font-size:9pt;margin:2pt 0 6pt;text-align:right}
+
+.blkbar{text-align:right;margin-bottom:1pt}
+.it{display:flex;position:relative}
+.it .lab{flex:none;width:19.4pt}
+.it.lv1{margin-left:23pt}.it.lv1 .lab{width:19pt}
+.it .tx{flex:1;outline:0;min-width:0;min-height:1.2em;word-break:keep-all}
+.it .tx:focus{background:#eef6f2;box-shadow:inset 0 0 0 1px var(--accent)}
+.it .ctls{position:absolute;right:-6pt;top:-11pt;display:none;background:#fff;z-index:3}
+.it:hover .ctls,.it:focus-within .ctls{display:flex}
+.it.p{padding-left:0;text-indent:0;margin:0 -4pt 0 5pt}
+.it.raw .lab{display:none}
+.it.raw.i{margin-left:4pt;padding-left:11pt;text-indent:-7pt}
+.it.raw .tx{text-indent:inherit}
+.mb .it.raw{font-size:9.5pt;line-height:15.6pt}
+.note .it.raw{font-size:11pt;line-height:15pt;text-align:justify;margin:0}
+body.pv .noprint,body.pv button.ctl,body.pv .warn{display:none!important}
+body.pv .ph>div:only-child:has(>br:only-child):before{content:""}
+body.pv .ls.m1>div:has(>br:only-child):before,body.pv .ls.m2>div:has(>br:only-child):before{content:""}
+.pgl{position:absolute;left:0;right:0;height:0;border-top:1.5px dashed #8a948f;pointer-events:none;z-index:5}
+.pgl span{position:absolute;right:8px;top:-9px;background:#fff;color:#8a948f;padding:0 6px;font:11px "Segoe UI","Malgun Gothic",sans-serif}
+body.pm .noprint,body.pm button.ctl,body.pm .warn,body.pm .hdr,body.pm .it .ctls{display:none!important}
+body.pm .ph>div:only-child:has(>br:only-child):before{content:""}
+body.pm .ls.m1>div:has(>br:only-child):before,body.pm .ls.m2>div:has(>br:only-child):before{content:""}
+@media print{
+ .pgl{display:none}
+ .layout{display:block;padding:0}.main{zoom:1!important;width:auto}#toc,.sumstrip{display:none}
+ .ph>div:only-child:has(>br:only-child):before{content:""}
+ .ls.m1>div:has(>br:only-child):before,.ls.m2>div:has(>br:only-child):before{content:""}
+ .it .tx:focus{background:none}
+ html{background:#fff}#bar,.noprint,button.ctl{display:none!important}
+ .sheet{box-shadow:none;margin:0;padding:0;width:auto}
+ .hdr{display:none}
+ input[type=text]:focus,.ls:focus{background:none;box-shadow:none}
+ .warn{display:none}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ tr,.blk,.gr>div{break-inside:avoid}
+}
+@page{size:A4;margin:24mm 20mm 20mm;
+ @top-center{content:"▣ 2026학년도 학업성적관리지침 변경 사항 반영 ▣";color:#f00;font-weight:bold;font-style:italic;font-size:8.5pt}
+ @bottom-center{content:"- " counter(page) " -";font-size:9.5pt}}
+</style>
+</head>
+<body>
+<header id="bar" class="topbar noprint"><div><p class="eyebrow">교수학습평가계획서</p><h1 id="ttl">2026학년도 1학기 작성</h1></div>
+<div class="tb-actions"><div class="seg"><button id="segE" class="on" onclick="setPv(false)">편집</button><button id="segP" onclick="setPv(true)">미리보기</button></div>
+<button class="ghost" onclick="saveJson()">JSON 저장</button><button class="ghost" onclick="document.getElementById('f').click()">불러오기</button><button class="ghost danger" onclick="resetAll()">전체 초기화</button><button class="primary" onclick="window.print()">인쇄 / PDF 저장</button><input id="f" type="file" accept=".json" hidden></div></header>
+<div class="layout"><nav id="toc" class="noprint"><p>목차</p><div id="tocl"></div></nav>
+<div class="main" id="main"><section class="sumstrip noprint"><div><b><span data-c="s.hours">0</span> / <span data-c="s.target">–</span></b><span class="l">시수 누계 / 기준</span></div><div><b data-c="s.ratio">–</b><span class="l">정기시험 : 수행평가 (%)</span></div><div><b data-c="s.ns">–</b><span class="l">논·서술형 반영비율</span></div><div><b><span data-c="s.pts">0</span>점</b><span class="l">수행평가 영역 만점 합계</span></div></section>
+<div class="sheet" id="doc"></div></div></div>
+<script>
+const KEY='plan2026-1-v3';
+const GA='가나다라마바사아자차카타파하';
+let S;
+const fresh=()=>{const s={vals:{},uid:100,periods:[],pcols:[],perfs:[],perfS:{},rep:12};
+ for(let i=0;i<5;i++)s.periods.push(++s.uid);
+ s.pcols=[++s.uid,++s.uid];
+ for(let i=0;i<2;i++)addPerf(s);
+ return s};
+function addPerf(s){const id=++s.uid;const ps={groups:[],lines:{},grades:[]};
+ for(let i=0;i<4;i++)addGroup(s,ps);
+ for(let i=0;i<5;i++){const g=++s.uid;ps.grades.push(g);s.vals['g'+g+'.l']='ABCDE'[i]}
+ s.perfS[id]=ps;s.perfs.push(id)}
+function addGroup(s,ps){const g=++s.uid;ps.groups.push(g);ps.lines[g]=[];for(let i=0;i<5;i++)ps.lines[g].push(++s.uid)}
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.vals)S=fresh();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const V=S.vals;
+
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[^\d.\-]/g,''));return isNaN(n)?0:n};
+const has=v=>v!=null&&String(v).trim()!=='';
+const fmt=x=>Number.isInteger(x)?String(x):String(+x.toFixed(1));
+const R=t=>`<span class="red b">${t}</span>`;
+const T=(k,d='',st='')=>`<input type="text" data-k="${k}" data-d="${esc(d)}" style="${st}" spellcheck="false">`;
+const L=(k,o={})=>`<div class="ls ${o.mark?'m'+o.mark:''} ${o.hang?'hang':''} ${o.cls||''}" contenteditable="true" data-ls="1" data-k="${k}" data-d="${esc(o.d||'')}" ${o.num?`data-num="${o.num}"`:''} ${o.ph?`data-ph="${esc(o.ph)}"`:''} spellcheck="false" style="${o.st||''}"></div>`;
+const CB=(k,t,cls='')=>`<label class="cb ${cls}"><input type="checkbox" data-k="${k}"><span>${t}</span></label>`;
+const CBO=(k,t)=>`<label class="cb" style="grid-column:1/-1"><input type="checkbox" data-k="${k}"><span>${t}</span><input type="text" data-k="${k}.t" data-chk="${k}" style="width:70pt;margin-left:2pt" spellcheck="false"></label>`;
+const btn=(act,id,t,extra='')=>`<button class="ctl noprint ${extra}" data-act="${act}" data-id="${id}">${t}</button>`;
+/* ---- 편집 가능한 문구 목록 ---- */
+const LMODE={sec2:'ga',sec7:'ga',sec8:'ga',sec4a:'raw',sec4b:'raw',sec5:'raw'};
+function defLists(){
+ const mk=a=>a.map(([lv,h,c])=>({id:++S.uid,lv,h,c:c||''}));
+ return {
+ sec2:mk([
+  [0,`평가는 ${R('정기시험')}과 수행평가의 영역으로 나누어 각각 100점 만점으로 실시하며, 학기말 성적 산출 시 정해진 비율로 합산한다.`],
+  [0,`${R('정기시험')} 및 수행평가에서 학생이 배운 학교 교육과정의 범위와 수준을 벗어난 내용을 출제하여 평가하지 않도록 한다.`],
+  [0,'평가의 구체적인 내용(시기, 방법, 기준 등)에 대해 충분히 안내하고, 채점 결과는 빠른 시일 내에 공개하여 공정하고 투명한 평가가 이루어지도록 한다.'],
+  [0,'평가 문항에 기본 점수를 부여하지 않으며 작성하지 않은 문항은 0점 처리한다.'],
+  [0,`${R('정기시험')}은 논·서술형 문항을 포함하여 출제하며, <span class="u">논·서술형 문항 배점은 수행평가를 포함하여 학기말 총 배점의 30% 이상 반영한다. ${R('정기시험')}을 1회 실시할 경우 ${R('정기시험')}의 학기말 반영 비율은 40% 이하로 한다.</span>`],
+  [0,`${R('정기시험')}의 논·서술형 문항을 출제할 때 반드시 채점기준표를 작성하며, 채점기준표에는 모범답안, 유사 답안 처리, 풀이 과정에 따른 부분 점수 및 단계별 점수 등이 포함되어야 한다. 논·서술형 평가 답안지 채점 시에는 이미 제시한 문항별 배점과 채점기준표에 근거하여 채점한다.`],
+  [0,`수행평가는 성취기준에 기반하여 교과 수업 중에 실시하는 것을 원칙으로 한다. <span class="u">수행평가의 영역별 기본점수(기본점수란 수행평가에 참여한 학생에게 부여하는 최소 점수를 의미함. 고의적 미제출, 백지답안 등과는 구별되어야 함)를 부여할 경우 영역 만점의 40%를 초과할 수 없다. ${R('수행평가 1영역당 학기말 반영 비율은 40% 이하로 할 수 있다.')}</span>`],
+  [0,'특수교육 대상 학생, 병원학교 학생 중에서 지적 장애, 쓰기 활동 불가 등의 특성을 가진 경우, 수행평가는 학생의 능력 및 장애 특성에 맞게 평가 항목과 배점을 조정하여 실시한다. 특수교육 대상 학생의 장애가 심하여 수행평가 영역에 응시가 불가능한 경우 학업성적관리규정에 따라 인정점을 부여한다.'],
+  [0,R('수행평가에서 인공지능(AI) 도구를 활용하는 경우, 평가의 공정성 및 신뢰성이 훼손되지 않도록 주의하고, 평가 시행 전 학생 유의사항을 충분히 안내한다.')],
+  [1,R('인공지능(AI)은 맞춤형 피드백 제공 등을 위해 수업·평가에서 보조적으로 활용할 수 있으나, 평가의 공정성·신뢰성을 훼손하지 않도록 유의해야 한다.')],
+  [1,R('교사가 직접 학생의 활동을 관찰할 수 있는 평가를 통해 학생의 독자적 사고에 따른 결과물이 평가에 반영될 수 있도록 해야 한다.')],
+  [1,R('실제 평가 상황에서 인공지능(AI) 활용이 금지되는 행위를 명확히 설정하고, 관련 유의사항을 학생·학부모에게 사전에 안내해야 한다.')],
+  [0,'이 계획에 명시되지 않은 내용에 대해서는 강원특별자치도교육청 학업성적관리지침 및 본교 학업성적관리규정에 따른다.']]),
+ sec4a:mk([[0,`가. ${R('정기시험')}과 수행평가의 성취도는 고정 분할 점수를 적용한 다음의 성취율에 따라 평정하며, 성취율 40% 미도달자 중 최소성취수준 보장 지도 이수 시 성취도 ‘E’를 부여한다.`]]),
+ sec4b:mk([[0,'나. 보통 교과 공통 과목의 과학탐구실험 및 예술체육교과의 과목 성취도는 고정 분할 점수를 적용한 다음의 성취율에 따라 평정하며, 성취율 40% 미도달자 중 최소성취수준 보장 지도 이수 시 성취도 ‘C’를 부여한다.']]),
+ sec5:mk([
+  [0,'■ 대상 학생 :'],
+  [0,'- 공통과목(초중고등학교 교육과정 총론에 고시) : 학기말 과목 이수 기준 미달(최소성취 수준 40% 미만)하였거나, 1학점당 수업량(16회 기준)의 2/3 이상 출석 기준에 도달하지 않은 학생','i red'],
+  [0,'- 선택과목 : 1학점당 수업량(16회 기준)의 2/3 이상 출석 기준에 도달하지 않은 학생','i red'],
+  [0,'- 교양과목과 창의적체험활동은 최소성취수준보장지도 대상 제외)','i'],
+  [0,'■ 보충 지도 시기 : 학기말 성적 산출 이후(학업성적관리위원회 심의 및 학부모 동의 직후) 방학 전 수업 유연화 기간 및 방학 기간'],
+  [0,'■ 차시별 보충 지도 내용 및 방법'],
+  [0,'- 1학점당 3시수(2학점 과목 6시수, 3학점 과목 9시수, 4학점 과목 12시수)','i red'],
+  [0,'- 보충 지도가 끝나면 지도 교사 서명이 들어간 출석부를 학업성적관리위원회에 제출','i'],
+  [0,'- 보충 지도 운영 방법은 대면 지도(실시간 쌍방향 온라인 수업 포함), 보충과제 부여, 온라인콘텐츠(EBSi) 수강, 학습멘토링, AI디지털교과서활용지도 등이며, <b>1시간 이상 대면 지도(온라인 쌍방형 지도 포함)를 반드시 포함</b>해야 함','i']]),
+ sec7:mk([
+  [0,`정기고사의 결시자와 학적변동자의 ${R('정기시험')} 성적은 학업성적관리규정에 따른다.`],
+  [0,'수행평가 미인정 결시생은 항목별로 0점을 부여할 수 있다.'],
+  [0,'수행평가 결과물 미제출이나 평가 과정에 참여하지 않고 방관한 학생에게 0점을 부여할 수 있다.'],
+  [0,'학적변동자는 이전 학교의 수행평가 성적 중 평가영역, 반영비율이 같은 것이 있을 경우 전입 전 성적을 인정한다. 이전 학교의 수행평가에 같은 항목이 없을 경우 해당 항목에 대하여 별도로 수행평가를 실시한다. 수행평가를 실시할 수 없을 경우 교과협의회를 거쳐 학업성적관리위원회의 심의를 통해 방법을 결정한다.'],
+  [0,'학업성적관리규정에 포함되지 않은 사항은 강원특별자치도교육청 학업성적관리지침을 준용하여 교과협의회에서 결정한다.']]),
+ sec8:mk([
+  [0,`정기고사 미참여 학생 중 공결·병결 등 부득이한 사유로 인한 결시생의 ${R('정기시험')} 성적은 학업성적관리규정에 따른다.`],
+  [0,`수행평가 미참여 학생 중 공결·병결 등 부득이한 사유로 인한 결시생에 대해서는 추가평가를 실시하고 병원학교, 원격수업 대상 학생에 대해서는 화상회의 프로그램으로 추가평가를 실시한다. 다만 추가평가가 불가능할 경우, 학업성적관리규정에 명시된 ${R('정기시험')} 인정점 계산 방식을 준용하여 수행평가 인정점을 부여하고 그 점수를 NEIS에 직접 입력한다.`],
+  [0,'평가 결과는 학습자의 성취 수준 및 중요 역량의 발달 정도를 판단하는 자료로 활용한다.'],
+  [0,'평가 결과는 교수·학습 방법이나 평가 방법, 평가도구를 개선하기 위한 기초 자료로 활용하고, 나아가 교사의 배움 중심 교수·학습 방법 개선의 환류 자료로 활용한다.'],
+  [0,'평가 결과를 통해 학습자의 성취 수준 이외에 교수·학습에 영향을 끼치는 여러 요인을 분석하여 학습자, 교사, 학부모, 교육 관련자에게 이를 제공함으로써 학습자의 창의적인 능력을 키우는 데 활용하되, 평가 결과 보고 체계를 구체화·다양화한다.']])};
+}
+function listHtml(name){const arr=S.lists[name],mode=LMODE[name];let n0=0,n1=0;
+ return `<div class="lst" data-list="${name}">`+arr.map(it=>{let lab='';
+  if(mode==='ga'){if(it.lv===1){n1++;lab=`(${n1})`}else{n1=0;lab=(GA[n0]||'')+'.';n0++}}
+  const id=name+':'+it.id;
+  return `<div class="it ${mode==='ga'?'p lv'+it.lv:'raw '+(it.c||'')}" data-lid="${it.id}"><span class="lab">${lab}</span><div class="tx" contenteditable="true" spellcheck="false">${it.h}</div><span class="ctls noprint">${btn('addItem',id,'+ 항목')}${mode==='ga'&&it.lv===0?btn('addSub',id,'+ 하위'):''}${btn('delItem',id,'× 삭제')}</span></div>`}).join('')+'</div>'}
+const GTDEF={A:[['90% 이상','A'],['80% 이상~90% 미만','B'],['70% 이상~80% 미만','C'],['60% 이상~70% 미만','D'],['40% 이상~60% 미만','E'],['40% 미만','미도달']],
+ B:[['80% 이상~100%','A'],['60% 이상~80% 미만','B'],['40% 이상~60% 미만','C'],['40% 미만','미도달']]};
+const gtEd=n=>`<table class="gt"><tr><td>성취율(원점수)</td><td>성취도</td></tr>${Array.from({length:S.gtn[n]},(_,i)=>{const d=GTDEF[n][i]||['',''];return `<tr><td>${T(`gt${n}.${i}.a`,d[0],'text-align:center')}</td><td>${T(`gt${n}.${i}.b`,d[1],'text-align:center')}</td></tr>`}).join('')}</table><div class="noprint">${btn('addGt',n,'+ 행 추가')}${S.gtn[n]>1?btn('delGt',n,'− 행 삭제'):''}</div>`;
+/* 수행평가 영역 만점 합계 100 유지 */
+function balance(ed){const cols=S.pcols,n=cols.length;if(!n)return;
+ if(n===1){V['c'+cols[0]+'.pt']='100';return}
+ if(ed==null){const b=Math.floor(100/n);cols.forEach((c,i)=>V['c'+c+'.pt']=String(i===n-1?100-b*(n-1):b));return}
+ const e=Math.min(100,Math.max(0,num(V['c'+ed+'.pt'])));V['c'+ed+'.pt']=String(e);
+ const others=cols.filter(c=>c!==ed),rest=100-e,osum=others.reduce((a,c)=>a+num(V['c'+c+'.pt']),0);let acc=0;
+ others.forEach((c,i)=>{let v;if(i===others.length-1)v=Math.max(0,rest-acc);else{v=osum>0?Math.round(num(V['c'+c+'.pt'])/osum*rest):Math.round(rest/others.length);acc+=v}V['c'+c+'.pt']=String(v)})}
+function scaleAll(){const cols=S.pcols,n=cols.length;if(!n)return;const sum=cols.reduce((a,c)=>a+num(V['c'+c+'.pt']),0);
+ if(!sum){balance(null);return}let acc=0;cols.forEach((c,i)=>{let v;if(i===n-1)v=100-acc;else{v=Math.round(num(V['c'+c+'.pt'])/sum*100);acc+=v}V['c'+c+'.pt']=String(v)})}
+function syncPt(){S.pcols.forEach(c=>{const i=doc.querySelector(`[data-k="c${c}.pt"]`);if(i)i.value=V['c'+c+'.pt']||''})}
+function addItem(name,iid,sub){const arr=S.lists[name],i=arr.findIndex(x=>x.id===iid);if(i<0)return null;const cur=arr[i];
+ let at=i+1;if(cur.lv===0)while(at<arr.length&&arr[at].lv===1)at++;
+ const it={id:++S.uid,lv:sub?1:(LMODE[name]==='ga'?cur.lv:0),h:'',c:cur.c};arr.splice(at,0,it);return it.id}
+
+if(!S.lists)S.lists=defLists();if(!S.gtn)S.gtn={A:6,B:4};if(S.pcols.length&&!has(V['c'+S.pcols[0]+'.pt']))balance(null);
+
+const MONTHS=['3월\n1주~\n4주','4월\n1주~\n4주','5월\n1주~\n4주','6월\n1주~\n4주','7월\n1주'];
+const methodBox=id=>`<div class="m"><div class="lab">수업·평가 방법 / 수업·평가 연계의 주안점</div><div class="bx">
+<div class="r"><div class="k">수업 방법</div><div class="v"><div class="g">${['강의식','토론식','실험·실습·탐구','모둠학습'].map(t=>CB(`p${id}.s.${t}`,t)).join('')}${CBO(`p${id}.s.etc`,'기타:')}</div></div></div>
+<div class="r"><div class="k">평가 방법</div><div class="v"><div class="g">${['서·논술','구술·발표','토의·토론','프로젝트','실험·실습','포트폴리오','형성평가'].map(t=>CB(`p${id}.e.${t}`,t)).join('')}${CB(`p${id}.e.정기시험`,'<b>정기시험</b>','red')}${['교사 관찰 및 기록','자기 평가','동료 평가'].map(t=>CB(`p${id}.e.${t}`,t)).join('')}<span></span>${CBO(`p${id}.e.etc`,'기타:')}</div></div></div>
+<div class="r"><div class="k">수업·평가 연계의 주안점</div><div class="v">${L(`p${id}.note`,{cls:'red b ph',ph:'수업과 평가를 연계할 때 무엇을 중요하게 고려해야 하는지 진술하시기 바랍니다.',st:'font-size:8.8pt;line-height:12pt'})}</div></div></div></div>`;
+const periodBlock=(id,i)=>`<div class="blk"><div class="noprint blkbar">${btn('insPeriod',id,'↑ 위에 시기 추가')}${btn('delPeriod',id,'× 이 시기 삭제')}</div>
+<table class="pt"><colgroup><col style="width:34.4pt"><col style="width:36pt"><col style="width:105pt"><col></colgroup>
+<tr class="hd"><td>시기</td><td>시수/<br>누계</td><td>단원명<br>(평가영역)</td><td>성취기준 및 평가 요소</td></tr>
+<tr class="dr"><td>${L(`p${id}.month`,{d:MONTHS[i]||'월\n1주~\n주',st:'text-align:center'})}</td>
+<td><div class="hs">${T(`p${id}.hours`)}<span>/</span><span data-c="cum.${id}" style="min-width:16pt;text-align:left"></span></div></td>
+<td class="u">${L(`p${id}.unit`,{num:'1',hang:1,d:'1. '})}</td><td class="u">${L(`p${id}.crit`,{mark:2})}</td></tr></table>
+${methodBox(id)}</div><div class="sep"></div>`;
+
+const t3=()=>{const n=S.pcols.length;
+ const sc=k=>`<div class="sc"><div>${T(k,'','width:24pt;text-align:right')}점</div><div>(<span data-c="r.${k}" style="min-width:22pt;text-align:right"></span>%)</div></div>`;
+ const pw=(217/n).toFixed(1);
+ return `<table class="rt"><colgroup><col style="width:62pt"><col style="width:38pt"><col style="width:38pt"><col style="width:38pt"><col style="width:38pt">${S.pcols.map(()=>`<col style="width:${pw}pt">`).join('')}<col style="width:45pt"></colgroup>
+<tr style="height:13pt"><td class="lb">평가 유형</td><td colspan="4" class="dl" style="font-weight:bold;font-size:9.5pt"><span class="red">정기시험</span></td><td colspan="${n}" class="dl" style="font-weight:bold;font-size:9.5pt">수행평가</td><td class="lb dl">합계</td></tr>
+<tr style="height:13pt"><td class="lb">반영비율</td><td colspan="4" class="dl"><div class="pc">${T('t3.reg','','width:28pt')}%</div></td><td colspan="${n}" class="dl"><span data-c="t3.perfp"></span>%</td><td class="dl"><span data-c="t3.tot"></span></td></tr>
+<tr style="height:18pt"><td rowspan="2" class="lb">평가 요소<br>(방법)</td><td colspan="2" style="font-weight:bold;font-size:10pt">중간고사</td><td colspan="2" style="font-weight:bold;font-size:10pt">기말고사</td>${S.pcols.map(c=>`<td rowspan="2" class="nm">${L(`c${c}.name`)}</td>`).join('')}<td rowspan="3" style="vertical-align:bottom">–</td></tr>
+<tr style="height:13pt"><td>선택형</td><td>논·서술형</td><td>선택형</td><td>논·서술형</td></tr>
+<tr><td class="lb">영역 만점<br>(반영비율)</td>${['ms','mn','fs','fn'].map(k=>`<td>${sc('t3.'+k)}</td>`).join('')}${S.pcols.map(c=>`<td>${sc('c'+c+'.pt')}</td>`).join('')}</tr>
+<tr style="height:40pt"><td class="lb">논·서술형<br>평가<br>반영비율</td><td>–</td><td><span data-c="ns.mn"></span></td><td>–</td><td><span data-c="ns.fn"></span></td>${S.pcols.map(c=>`<td><div class="tg"><span data-c="ns.c${c}"></span><input type="checkbox" class="noprint" data-k="c${c}.nsx" data-inv="1" title="논·서술형 평가에 포함(해제 시 '-')"></div></td>`).join('')}<td><span data-c="ns.sum"></span></td></tr>
+<tr style="height:12.5pt"><td class="lb">평가 시기</td><td colspan="2">${T('t3.tm','','text-align:center')}</td><td colspan="2">${T('t3.tf','','text-align:center')}</td>${S.pcols.map(c=>`<td>${T('c'+c+'.time','','text-align:center')}</td>`).join('')}<td>–</td></tr>
+<tr style="height:12.5pt"><td class="lb">성취기준</td><td colspan="2">별표1</td><td colspan="2">별표1</td>${S.pcols.map(()=>'<td>별표1</td>').join('')}<td>–</td></tr></table>
+<div class="noprint" style="margin:3pt 0"><b>수행평가 영역 만점 합계 <span data-c="ptsum"></span>점</b> (영역을 바꿔도 합계 100점 유지 · 6번 표도 함께 추가/삭제) ${S.pcols.length<6?btn('addCol',0,'+ 수행평가 영역 추가'):''}${S.pcols.length>1?S.pcols.map((c,i)=>btn('delCol',c,`× 영역${i+1} 삭제`)).join(''):''}</div>
+<div class="warn noprint" data-c="t3.warn"></div>`};
+const gbox=()=>{const cells=[`<div>〈중간고사〉${L('b.mid',{mark:2})}</div>`,`<div>〈기말고사〉${L('b.fin',{mark:2})}</div>`];
+ S.pcols.forEach(c=>cells.push(`<div>〈수행평가- <span data-c="bn.${c}"></span>〉${L('b.c'+c,{mark:2})}</div>`));
+ if(cells.length%2)cells.push('<div></div>');
+ const n=cells.length;cells[n-1]=cells[n-1].replace('<div>','<div class="last">');cells[n-2]=cells[n-2].replace('<div>','<div class="last">');
+ return `<div class="gr">${cells.join('')}</div>`};
+
+const gt=(h,rows)=>`<table class="gt"><tr><td>${h[0]}</td><td>${h[1]}</td></tr>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>`;
+const s5=()=>`<table class="s5"><colgroup><col style="width:46pt"><col></colgroup>
+<tr><td>성취수준</td><td>진술</td></tr>
+${['A','B','C','D','E'].map(g=>`<tr><td>${g}</td><td class="t">${L('s5.'+g,{st:'min-height:22pt'})}</td></tr>`).join('')}
+<tr style="border-bottom:1.5pt solid #000"><td style="line-height:15pt">최소능력<br>수행특성</td><td class="t">${L('s5.min',{st:'min-height:26pt'})}</td></tr></table>
+<div class="mb"><div class="ttl">최소성취수준 보장 지도 계획</div>
+${listHtml('sec5')}
+<table class="rp"><colgroup><col style="width:36pt"><col style="width:222pt"><col></colgroup><tr><td>차시</td><td>학습 내용</td><td>운영 방법</td></tr>
+${Array.from({length:S.rep},(_,i)=>`<tr><td>${i+1}</td><td>${T('rp'+i+'.a')}</td><td>${T('rp'+i+'.b')}</td></tr>`).join('')}</table>
+<div class="noprint">${btn('addRep',0,'+ 차시 추가')}${S.rep>1?btn('delRep',0,'− 차시 삭제'):''}</div></div>`;
+
+const perfTable=(pid)=>{const ps=S.perfS[pid];const k=s=>`f${pid}.${s}`;
+ const cbs1=['서·논술','구술·발표','토의·토론','프로젝트','실험·실습','포트폴리오','형성평가'].map(t=>CB(k('m.'+t),t)).join('');
+ const cbs2=['자기평가','동료 평가','관찰·기록','학생 작품 평가'].map(t=>CB(k('m.'+t),t)).join('')+CBO(k('m.etc'),'기타');
+ const grades=ps.grades.map(g=>`<div class="ab"><div class="gl">${T('g'+g+'.l')}</div>${L('g'+g+'.t')}${ps.grades.length>1?btn('delGrade',pid+':'+g,'×'):''}</div>`).join('');
+ const groups=ps.groups.map(g=>{const ls=ps.lines[g];
+  return ls.map((l,i)=>{const last=i==ls.length-1;const bb=last?'border-bottom:.5pt solid #000;':'';
+  return `<tr>${i==0?`<td rowspan="${ls.length}" class="lbl" style="border-bottom:.5pt solid #000">${L('e'+g+'.name',{st:'text-align:center'})}<div>(<span data-c="gt.${g}"></span>점)</div><div class="noprint">${btn('addLine',pid+':'+g,'+줄')}${ls.length>1?btn('delLine',pid+':'+g,'−줄'):''}${ps.groups.length>1?btn('delGroup',pid+':'+g,'×요소'):''}</div></td>`:''}
+  <td class="dsh" style="${bb}">${L('l'+l+'.t')}</td>
+  <td class="dsh" style="text-align:center;${bb}">${T('l'+l+'.s','','text-align:center')}</td>
+  ${i==0?`<td rowspan="${ls.length}" style="text-align:center;border-bottom:.5pt solid #000"><span data-c="gts.${g}"></span></td>`:''}</tr>`}).join('')}).join('');
+ return `<table class="pf"><colgroup><col style="width:68pt"><col><col style="width:40pt"><col style="width:42pt"></colgroup>
+<tr><td class="lbl">평가 영역</td><td colspan="3">${T(k('area'))}</td></tr>
+<tr><td class="lbl">평가 방법</td><td colspan="3" style="padding:0"><div class="ck" style="grid-template-columns:50pt 57pt 57.5pt 57.5pt 53.7pt 57.5pt 1fr">${cbs1}</div><div class="ck" style="grid-template-columns:50pt 57pt 57.5pt 77.5pt 1fr">${cbs2}</div></td></tr>
+<tr><td class="lbl" style="line-height:13pt">교육 과정<br>성취 기준</td><td colspan="3" style="padding:2pt 4pt">${L(k('cur'),{mark:2})}</td></tr>
+<tr><td class="lbl">평가 기준</td><td colspan="3" style="padding:0 2pt">${grades}<div class="noprint">${btn('addGrade',pid,'+ 기준 행')}</div></td></tr>
+<tr><td class="lbl">평가 요소</td><td style="text-align:center">채점 기준</td><td colspan="2" style="text-align:center">배점</td></tr>${groups}</table>
+<div class="tt"><span class="noprint">${btn('addGroup',pid,'+ 평가 요소 추가')}</span> 배점 합계: <b data-c="pt.${pid}">0</b>점 <span class="warn noprint" data-c="pw.${pid}"></span></div>`};
+
+const HI=(k,d)=>`<input type="text" class="hin" data-k="${k}" data-d="${esc(d)}" spellcheck="false">`;
+const SEC=(n,t)=>`<div class="sec"><div class="n">${n}</div><div class="t">${HI('sec'+n,t)}</div></div>`;
+const HDR0='▣ 2026학년도 학업성적관리지침 변경 사항 반영 ▣';
+function build(){
+ return `<div class="hdr">${HI('hdr',HDR0)}</div>
+<div class="tl" style="font-size:17.5pt;line-height:22pt;letter-spacing:-.2pt;margin-bottom:12pt">${HI('title','2026학년도 1학기 교수학습평가계획서')}(<span data-c="gradeT"> </span>)</div>
+<table style="width:100%;table-layout:fixed;border-top:1.5pt solid #000;border-bottom:2pt solid #000"><colgroup><col style="width:114.5pt"><col style="width:64.5pt"><col style="width:254pt"><col></colgroup>
+<tr style="height:18pt;font-weight:bold;font-size:12.5pt;text-align:center"><td style="border:.5pt solid #000;border-top:0;border-left:0">교과</td><td style="border:.5pt solid #000;border-top:0">학년</td><td style="border:.5pt solid #000;border-top:0">과목명</td><td style="border:.5pt solid #000;border-top:0;border-right:0">학점</td></tr>
+<tr style="height:19pt"><td style="border:.5pt solid #000;border-left:0">${T('info.subj','','text-align:center;font-size:12.5pt')}</td><td style="border:.5pt solid #000">${T('info.grade','','text-align:center;font-size:12.5pt')}</td><td style="border:.5pt solid #000">${T('info.name','','text-align:center;font-size:12.5pt')}</td><td style="border:.5pt solid #000;border-right:0">${T('info.credit','','text-align:center;font-size:12.5pt')}</td></tr></table>
+${SEC('Ⅰ','교수학습·평가 방법')}
+<div class="red b" style="font-size:10.5pt;margin:12pt 0 8pt;line-height:16pt">▶ <span data-c="hnote"></span></div><div class="warn noprint" data-c="hwarn"></div>
+<div>${S.periods.map(periodBlock).join('')}</div>
+<div class="noprint addrow">${btn('addPeriod',0,'+ 시기 블록 추가')}</div>
+${SEC('Ⅱ','평가 세부 계획')}
+<div class="h" style="margin-top:14pt">${HI('h1','1. 평가의 목적, 방향(과목별)')}</div>
+<div style="border-top:1.5pt solid #000;border-bottom:1.5pt solid #000;margin-top:4pt;padding:2pt 3pt;font-size:11pt;line-height:15pt;min-height:40pt">${L('goal',{num:'ga',hang:1,d:'가. '})}</div>
+<div class="h">${HI('h2','2. 평가의 방침과 유의사항(공통)')}</div>
+<div style="margin-top:3pt">${listHtml('sec2')}</div>
+<div class="h">${HI('h3','3. 평가 영역 및 반영 비율(과목별)')}</div>
+<div style="margin-top:4pt">${t3()}</div>
+<div style="font-size:9.5pt;margin-top:14pt">〈별표1 성취기준〉</div>
+<div style="margin-top:3pt">${gbox()}</div>
+<div class="h">${HI('h4','4. 기준 성취율과 성취도(공통)')}</div>
+<div class="note" style="margin-top:2pt">${listHtml('sec4a')}</div>
+${gtEd('A')}
+<div class="note" style="margin-top:8pt">${listHtml('sec4b')}</div>
+${gtEd('B')}
+<div class="h" style="margin-top:26pt">${HI('h5','5. 학기 단위 성취 수준과 최소성취수준 보장 지도 계획(과목별)')}</div>
+<div style="margin-top:5pt">${s5()}</div>
+<div class="h">${HI('h6','6. 수행평가 세부 기준(과목별)')}</div>
+${S.perfs.map(perfTable).join('')}
+<div class="h">${HI('h7','7. 결시자와 학적변동자 처리 기준(공통)')}</div>
+<div style="margin-top:3pt">${listHtml('sec7')}</div>
+<div class="h">${HI('h8','8. 성적 처리 방법 및 평가 결과의 활용(공통)')}</div>
+<div style="margin-top:2pt">${listHtml('sec8')}</div>`;
+}
+
+const doc=document.getElementById('doc');
+const lsRead=el=>{const k=[...el.children].filter(c=>c.tagName==='DIV');return k.length?k.map(c=>c.textContent).join('\n'):el.textContent};
+const lsWrite=(el,v)=>{const ph=el.dataset.ph?` data-ph="${esc(el.dataset.ph)}"`:'';el.innerHTML=String(v==null?'':v).split('\n').map(l=>`<div${ph}>${l?esc(l).replace(/&quot;/g,'"'):'<br>'}</div>`).join('')};
+function render(){
+ doc.innerHTML=build();
+ doc.querySelectorAll('[data-k]').forEach(el=>{
+  const k=el.dataset.k,v=V[k];
+  if(el.type==='checkbox')el.checked=v!==undefined?!!v:!!el.dataset.inv;
+  else if(el.dataset.ls)lsWrite(el,v!==undefined?v:el.dataset.d);
+  else el.value=v!==undefined?v:(el.dataset.d||'');
+ });
+ recompute();applyHdr();buildToc();
+}
+const setC=(n,t)=>{document.querySelectorAll(`[data-c="${n}"]`).forEach(e=>e.textContent=t)};
+function perfTotal(pid){const ps=S.perfS[pid];if(!ps)return 0;let s=0;ps.groups.forEach(g=>{s+=Math.max(0,...ps.lines[g].map(l=>num(V[`l${l}.s`])))});return s}
+function recompute(){
+ const g=V['info.grade'];setC('gradeT',has(g)?` ${String(g).trim()}학년`:' ');
+ const cr=num(V['info.credit']),target=cr*16;
+ setC('hnote',`${has(g)?String(g).trim()+'학년 ':''}${has(V['info.name'])?String(V['info.name']).trim()+' ':''}시수 누계 기준(${cr?cr+'학점 '+target+'시수':'1학점 16시수, 2학점 32시수, 3학점 48시수, 4학점 64시수'})`);
+ let cum=0,any=false;
+ S.periods.forEach(id=>{const h=V[`p${id}.hours`];if(has(h)){any=true;cum+=num(h)}setC('cum.'+id,any?fmt(cum):'')});
+ setC('hwarn',(any&&cr&&cum!==target)?`※ 시수 누계가 ${fmt(cum)}시수입니다(기준 ${target}시수).`:'');
+ const E=V['t3.reg'],hasE=has(E),e=num(E);
+ const sc={ms:num(V['t3.ms']),mn:num(V['t3.mn']),fs:num(V['t3.fs']),fn:num(V['t3.fn'])};
+ const mid=sc.ms+sc.mn,fin=sc.fs+sc.fn;
+ let act=[mid>0,fin>0];if(!act[0]&&!act[1])act=[true,true];
+ const nact=act.filter(Boolean).length,share=e/nact;
+ const rat={};
+ [['ms',mid],['mn',mid],['fs',fin],['fn',fin]].forEach(([k,tot])=>{rat[k]=(hasE&&has(V['t3.'+k])&&tot>0)?sc[k]/tot*share:null;setC('r.t3.'+k,rat[k]==null?'':fmt(rat[k]))});
+ const P=hasE?100-e:0;
+ S.pcols.forEach((c,i)=>{const pid=S.perfs[i];if(pid==null)return;const tot=perfTotal(pid),pt=num(V['c'+c+'.pt']);setC('pw.'+pid,tot!==pt?`※ 영역 만점(${fmt(pt)}점)과 배점 합계(${fmt(tot)}점)가 다릅니다.`:'')});setC('ptsum',fmt(S.pcols.reduce((a,c)=>a+num(V['c'+c+'.pt']),0)));
+ const ps=S.pcols.map(c=>num(V['c'+c+'.pt'])),psum=ps.reduce((a,b)=>a+b,0);
+ let nsSum=0,nsAny=false;
+ S.pcols.forEach((c,i)=>{const r=(hasE&&has(V['c'+c+'.pt'])&&psum>0)?ps[i]/psum*P:null;
+  setC('r.c'+c+'.pt',r==null?'':fmt(r));
+  const inc=V['c'+c+'.nsx']!==false;
+  setC('ns.c'+c,!inc?'-':(r==null?'':fmt(r)+'%'));
+  if(r!=null&&inc){nsSum+=r;nsAny=true}
+  setC('bn.'+c,String(V['c'+c+'.name']||'').replace(/\n/g,' '))});
+ ['mn','fn'].forEach(k=>{setC('ns.'+k,rat[k]==null?'':fmt(rat[k])+'%');if(rat[k]!=null){nsSum+=rat[k];nsAny=true}});
+ setC('ns.sum',nsAny?fmt(nsSum)+'%':'');
+ setC('t3.perfp',hasE?fmt(P):'');setC('t3.tot',hasE?'100%':'');
+ let w='';
+ if(hasE&&nsAny&&nsSum<30)w+=`※ 논·서술형 평가 반영비율 합계가 30% 미만입니다(현재 ${fmt(nsSum)}%). `;
+ if(hasE&&nact===1&&e>40)w+='※ 정기시험을 1회 실시할 경우 반영 비율은 40% 이하여야 합니다. ';
+ if(hasE&&(e<0||e>100))w+='※ 정기시험 반영비율은 0~100 사이여야 합니다. ';
+ setC('t3.warn',w);
+ S.perfs.forEach(pid=>{const p=S.perfS[pid];let sum=0;p.groups.forEach(gid=>{const m=Math.max(0,...p.lines[gid].map(l=>num(V[`l${l}.s`])));sum+=m;setC('gt.'+gid,fmt(m));setC('gts.'+gid,m?fmt(m):'')});setC('pt.'+pid,fmt(sum))});
+ setC('s.hours',any?fmt(cum):'0');setC('s.target',cr?String(target):'–');setC('s.ratio',hasE?fmt(e)+' : '+fmt(P):'–');setC('s.ns',nsAny?fmt(nsSum)+'%':'–');setC('s.pts',fmt(S.pcols.reduce((a,c)=>a+num(V['c'+c+'.pt']),0)));
+}
+
+document.execCommand('defaultParagraphSeparator',false,'div');
+doc.addEventListener('input',e=>{const el=e.target;if(el.classList&&el.classList.contains('tx')){const it=el.closest('[data-lid]'),nm=el.closest('[data-list]').dataset.list;const o=S.lists[nm].find(x=>x.id===+it.dataset.lid);if(o){o.h=el.innerHTML;save()}return}const k=el.dataset&&el.dataset.k;if(!k)return;
+ if(el.dataset.ls){if(!el.querySelector('div')){el.innerHTML='<div'+(el.dataset.ph?' data-ph="'+esc(el.dataset.ph)+'"':'')+'><br></div>';const r=document.createRange();r.selectNodeContents(el.firstChild);r.collapse(true);const s=getSelection();s.removeAllRanges();s.addRange(r)}V[k]=lsRead(el)}
+ else if(el.type==='checkbox')V[k]=el.checked;
+ else{V[k]=el.value;if(k==='hdr')applyHdr();
+  if(el.dataset.chk&&has(el.value)){V[el.dataset.chk]=true;const cb=doc.querySelector(`[data-k="${el.dataset.chk}"]`);if(cb)cb.checked=true}}
+ save();recompute()});
+doc.addEventListener('change',e=>{const el=e.target;const m=el.dataset&&el.dataset.k&&/^c(\d+)\.pt$/.exec(el.dataset.k);if(m){V[el.dataset.k]=el.value;balance(+m[1]);syncPt();save();recompute();return}if(el.type==='checkbox'&&el.dataset.k){V[el.dataset.k]=el.checked;save();recompute()}});
+doc.addEventListener('keydown',e=>{const el=e.target;if(!(el.classList&&el.classList.contains('tx')))return;const it=el.closest('[data-lid]'),nm=el.closest('[data-list]').dataset.list,iid=+it.dataset.lid;
+ if(e.key==='Enter'){e.preventDefault();if(e.shiftKey){document.execCommand('insertLineBreak');return}const nid=addItem(nm,iid,false);save();const y=scrollY;render();scrollTo(0,y);focusItem(nid)}
+ else if(e.key==='Backspace'&&el.textContent===''&&S.lists[nm].length>1){e.preventDefault();const arr=S.lists[nm],i=arr.findIndex(x=>x.id===iid);arr.splice(i,1);save();const y=scrollY;render();scrollTo(0,y);focusItem((arr[i-1]||arr[0]).id,true)}});
+function focusItem(id,end){const t=doc.querySelector(`[data-lid="${id}"] .tx`);if(!t)return;t.focus();if(end){const r=document.createRange();r.selectNodeContents(t);r.collapse(false);const s=getSelection();s.removeAllRanges();s.addRange(r)}}
+doc.addEventListener('keydown',e=>{const el=e.target.closest&&e.target.closest('.ls[data-num]');if(!el||e.key!=='Enter'||e.shiftKey)return;
+ e.preventDefault();document.execCommand('insertParagraph');
+ const n=[...el.children].filter(c=>c.tagName==='DIV').length;
+ document.execCommand('insertText',false,el.dataset.num==='ga'?(GA[n-1]||'')+'. ':n+'. ')});
+doc.addEventListener('paste',e=>{const tx=e.target.closest&&e.target.closest('.tx');if(tx){e.preventDefault();document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text/plain').replace(/\s*\n\s*/g,' '));return}const el=e.target.closest&&e.target.closest('.ls');if(!el)return;e.preventDefault();
+ (e.clipboardData||window.clipboardData).getData('text/plain').replace(/\r/g,'').split('\n').forEach((l,i)=>{if(i)document.execCommand('insertParagraph');if(l)document.execCommand('insertText',false,l)})});
+doc.addEventListener('click',e=>{const b=e.target.closest('button[data-act]');if(!b)return;
+ const a=b.dataset.act,id=b.dataset.id;const [p,q]=String(id).split(':').map(Number);
+ if(a==='addItem'||a==='addSub'||a==='delItem'){const [nm,i2]=id.split(':');const iid=+i2;let nid=null;
+  if(a==='delItem'){const arr=S.lists[nm];if(arr.length<2){alert('마지막 항목은 삭제할 수 없습니다. 내용을 지워서 사용하세요.');return}arr.splice(arr.findIndex(x=>x.id===iid),1)}
+  else nid=addItem(nm,iid,a==='addSub');
+  save();const y=scrollY;render();scrollTo(0,y);if(nid)focusItem(nid);return}
+ if(a==='addGt'){S.gtn[id]++;save();const y=scrollY;render();scrollTo(0,y);return}
+ if(a==='delGt'){S.gtn[id]=Math.max(1,S.gtn[id]-1);save();const y=scrollY;render();scrollTo(0,y);return}
+ const rm=(arr,x)=>{const i=arr.indexOf(x);if(i>=0)arr.splice(i,1)};
+ if(a==='addPeriod')S.periods.push(++S.uid);
+ else if(a==='insPeriod'){S.periods.splice(S.periods.indexOf(+id),0,++S.uid)}
+ else if(a==='delPeriod'){if(S.periods.length<2){alert('시기 블록이 하나만 남아 삭제할 수 없습니다.');return}if(!confirm('이 시기 블록을 삭제할까요?'))return;rm(S.periods,+id)}
+ else if(a==='addCol'){if(S.pcols.length<6){const c=++S.uid;S.pcols.push(c);addPerf(S);V['c'+c+'.pt']=String(Math.round(100/S.pcols.length));balance(c)}}
+ else if(a==='delCol'){const i=S.pcols.indexOf(+id);if(S.pcols.length<2||i<0)return;if(!confirm('이 수행평가 영역(과 6번의 해당 표)을 삭제할까요?'))return;S.pcols.splice(i,1);const pid=S.perfs[i];if(pid!=null){S.perfs.splice(i,1);delete S.perfS[pid]}scaleAll()}
+ else if(a==='addRep')S.rep++;
+ else if(a==='delRep')S.rep=Math.max(1,S.rep-1);
+  else if(a==='addGroup')addGroup(S,S.perfS[+id]);
+ else if(a==='delGroup'){const ps=S.perfS[p];rm(ps.groups,q);delete ps.lines[q]}
+ else if(a==='addLine')S.perfS[p].lines[q].push(++S.uid);
+ else if(a==='delLine')S.perfS[p].lines[q].pop();
+ else if(a==='addGrade')S.perfS[+id].grades.push(++S.uid);
+ else if(a==='delGrade')rm(S.perfS[p].grades,q);
+ save();const y=scrollY;render();scrollTo(0,y)});
+function setPv(on){document.body.classList.toggle('pv',on);doc.inert=on;document.getElementById('segE').classList.toggle('on',!on);document.getElementById('segP').classList.toggle('on',on);schedBreaks();scrollTo(0,0)}
+function applyHdr(){let st=document.getElementById('pagehdr');if(!st){st=document.createElement('style');st.id='pagehdr';document.head.appendChild(st)}const t=String(V.hdr!==undefined?V.hdr:HDR0).replace(/["\\\n]/g,' ');st.textContent='@page{@top-center{content:"'+t+'";color:#f00;font-weight:bold;font-style:italic;font-size:8.5pt}}'}
+function buildToc(){const box=document.getElementById('tocl');if(!box)return;const items=[['기본 정보',()=>scrollTo({top:0,behavior:'smooth'})]];
+ doc.querySelectorAll('.sec .t input,.h input').forEach(i=>{items.push([i.value,()=>i.closest('.sec,.h').scrollIntoView({behavior:'smooth',block:'start'})])});
+ box.innerHTML='';items.forEach(([t,f])=>{const a=document.createElement('a');a.textContent=t;a.onclick=f;box.appendChild(a)})}
+function fit(){const toc=document.getElementById('toc'),m=document.getElementById('main');const tocW=getComputedStyle(toc).display==='none'?0:200;const avail=innerWidth-tocW-32;const z=Math.min(1,avail/793);m.style.zoom=z<1?z:''}
+function resetAll(){if(confirm('입력한 모든 내용을 지우고 처음 상태로 되돌립니다. 계속할까요?')){try{localStorage.removeItem(KEY)}catch(e){}location.reload()}}
+function saveJson(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='교수학습평가계획서.json';a.click()}
+document.getElementById('f').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const o=JSON.parse(t);if(!o.vals)throw 0;localStorage.setItem(KEY,JSON.stringify(o));location.reload()}catch(x){alert('올바른 파일이 아닙니다.')}})};
+let pgT;function schedBreaks(){clearTimeout(pgT);pgT=setTimeout(drawBreaks,150)}
+function drawBreaks(){
+ doc.querySelectorAll('.pgl').forEach(e=>e.remove());
+ const main=document.getElementById('main');const z=parseFloat(main.style.zoom)||1;
+ const units=[...doc.querySelectorAll('.tl,.sec,.h,.blk,.note,.it,tr,.gr>div,.m,.mb')];
+ const pos=()=>{const sr=doc.getBoundingClientRect();return units.map(e=>{const r=e.getBoundingClientRect();return{t:(r.top-sr.top)/z,b:(r.bottom-sr.top)/z}})};
+ const edit=pos();
+ document.body.classList.add('pm');const pm=pos();document.body.classList.remove('pm');
+ const ok=pm.map(p=>p.b-p.t>0.5);
+ const PH=253*96/25.4;
+ const ti=units.findIndex(e=>e.classList.contains('tl'));if(ti<0)return;
+ const start=pm[ti].t;let end=0;pm.forEach((p,i)=>{if(ok[i]&&p.b>end)end=p.b});
+ const AV='.blk,tr,.gr>div',HD='.sec,.h';
+ const breaks=[];let B=start+PH,guard=0;
+ while(B<end-2&&guard++<60){
+  let bk=B,best=null;
+  units.forEach((e,i)=>{if(ok[i]&&e.matches(AV)&&pm[i].t<B-1&&pm[i].b>B+1&&pm[i].b-pm[i].t<PH){if(best==null||pm[i].t<pm[best].t)best=i}});
+  if(best!=null)bk=pm[best].t;
+  else units.forEach((e,i)=>{if(ok[i]&&e.matches(HD)&&pm[i].b<=B+1&&pm[i].b>B-60){let j=-1;units.forEach((u,k)=>{if(ok[k]&&!u.matches(HD)&&pm[k].t>=pm[i].b-1&&(j<0||pm[k].t<pm[j].t))j=k});if(j>=0&&pm[j].t>=B-3)bk=Math.min(bk,pm[i].t)}});
+  if(bk<=(breaks.length?breaks[breaks.length-1]:start)+40)bk=B;
+  breaks.push(bk);B=bk+PH}
+ breaks.forEach((bk,k)=>{let bi=-1;units.forEach((e,i)=>{if(ok[i]&&pm[i].t<=bk+0.5&&(bi<0||pm[i].t>=pm[bi].t))bi=i});
+  const y=bi<0?bk:edit[bi].t+(bk-pm[bi].t);
+  const d=document.createElement('div');d.className='pgl';d.style.top=y+'px';d.innerHTML='<span>'+(k+2)+'쪽 시작</span>';doc.appendChild(d)})}
+['input','change','click'].forEach(ev=>doc.addEventListener(ev,schedBreaks));
+window.addEventListener('resize',()=>{fit();schedBreaks()});window.addEventListener('load',schedBreaks);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedBreaks);
+render();fit();schedBreaks();
+</script>
+</body>
+</html>
