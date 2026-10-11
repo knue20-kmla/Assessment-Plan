@@ -63,8 +63,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!m.hidden)m.hidden=
 $('vtT').onclick=()=>setTab('teacher');$('vtA').onclick=()=>setTab('admin');
 
 async function call(payload){const u=window.__submitUrl&&window.__submitUrl();if(!u)throw new Error('제출 기능이 아직 설정되지 않았습니다. 관리자에게 문의하세요.');
- let r;try{r=await fetch(u,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})}catch(e){throw new Error('서버에 연결하지 못했습니다. 인터넷 연결을 확인해 주세요.')}
- let j=null;try{j=await r.json()}catch(e){}
+ let r,j=null;
+ for(let t=0;t<2&&!j;t++){ /* 조회는 읽기 전용이라 응답이 이상하면 한 번 더 시도 */
+  try{r=await fetch(u,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})}catch(e){if(t===1)throw new Error('서버에 연결하지 못했습니다. 인터넷 연결을 확인해 주세요.');continue}
+  try{j=await r.json()}catch(e){j=null}
+ }
  if(!j)throw new Error('응답을 확인하지 못했습니다. (응답 '+r.status+')');if(!j.ok)throw new Error(j.error||'요청에 실패했습니다.');return j}
 
 async function load(){if(busy)return;let payload;
