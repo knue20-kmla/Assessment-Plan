@@ -199,6 +199,15 @@ input.docname:focus{border-color:var(--accent);background:#fff;box-shadow:none}
 .gauto input{width:15px;height:15px}
 .gmsg{margin:6px 20px;font-size:13px;color:var(--muted)}
 #gl{padding:0 12px 8px}
+.xmenu{position:relative}
+.xpop{position:absolute;right:0;top:calc(100% + 6px);z-index:30;min-width:240px;background:#fffefc;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 40px rgba(71,48,32,.18);padding:6px}
+.xpop[hidden]{display:none}
+.xpop button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;border:0;background:transparent;border-radius:8px;padding:9px 12px;font:inherit;color:var(--ink);cursor:pointer;text-align:left}
+.xpop button:hover{background:var(--soft)}
+.xpop button b{font-size:14px}.xpop button span{font-size:11.5px;color:var(--muted)}
+.xtoast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#151c26;color:#fff;padding:11px 18px;border-radius:10px;font:14px Pretendard,'Malgun Gothic',sans-serif;box-shadow:0 12px 30px rgba(0,0,0,.28);transition:.25s;z-index:60;max-width:90vw}
+.xtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media print{.xtoast,.xmenu{display:none!important}}
 @media print{
  .pgl{display:none}
  .layout{display:block;padding:0}.main{zoom:1!important;width:auto}#toc,.sumstrip{display:none}
@@ -222,7 +231,7 @@ input.docname:focus{border-color:var(--accent);background:#fff;box-shadow:none}
 <header id="bar" class="topbar"><div class="brand"><img src="logo.png" alt="민족사관고등학교"><div><p class="school">민족사관고등학교</p><h1>교수학습평가계획서</h1></div></div>
 <div class="tb-doc"><span class="dlabel">문서</span><input id="docname" class="docname" type="text" value="" spellcheck="false" title="문서 이름 (클릭해서 수정)"><span id="saved" class="saved"></span><span id="gchip" class="saved"></span></div>
 <div class="tb-actions"><div class="seg"><button id="segE" class="on" onclick="setPv(false)">편집</button><button id="segP" onclick="setPv(true)">미리보기</button></div>
-<button class="ghost" onclick="newDoc()">+ 새 문서</button><button class="ghost" onclick="openDocs()">문서 목록 · 불러오기</button><button class="ghost" onclick="manualSave()">저장</button><button class="primary" onclick="window.print()">인쇄 / PDF 저장</button><input id="f" type="file" accept=".json" hidden></div></header>
+<button class="ghost" onclick="newDoc()">+ 새 문서</button><button class="ghost" onclick="openDocs()">문서 목록 · 불러오기</button><button class="ghost" onclick="manualSave()">저장</button><button class="ghost" onclick="window.print()">인쇄</button><div class="xmenu"><button class="primary" id="xbtn" onclick="toggleX(event)">내보내기 ▾</button><div class="xpop" id="xpop" hidden><button onclick="exportAs('pdf')"><b>PDF</b><span>.pdf · 화면 그대로 쪽 나눔</span></button><button onclick="exportAs('docx')"><b>MS 워드</b><span>.docx · 편집 가능</span></button><button onclick="exportAs('hwpx')"><b>한글</b><span>.hwpx · 한컴오피스</span></button><button onclick="exportAs('gdoc')"><b>Google 문서</b><span>드라이브에 Docs로 저장</span></button></div></div><input id="f" type="file" accept=".json" hidden></div></header>
 <div id="dm" class="modal" hidden><div class="mbox"><div class="mh"><b>문서 목록</b><span>과목·학기별로 문서를 따로 저장하고 불러옵니다.</span><button onclick="closeDocs()">닫기</button></div>
 <div class="mtools"><button class="pri" onclick="newDoc()">+ 새 문서</button><button onclick="importPick()">JSON 가져오기</button><button onclick="exportAll()">전체 백업(JSON)</button><button class="dng" onclick="resetCur()">현재 문서 초기화</button></div><div class="gdbox"><div class="gdh"><b>☁ Google 드라이브</b><span id="gstat"></span></div>
 <div class="mtools"><button id="gconn" class="pri" onclick="gConnectBtn()">Google 계정 연결</button><button onclick="gSaveCur()">현재 문서를 드라이브에 저장</button><button onclick="gOpenList()">드라이브에서 불러오기</button><button onclick="gSettings()">연결 설정</button><label class="gauto"><input type="checkbox" id="gauto" onchange="gAutoToggle(this.checked)"> 수정하면 자동으로 드라이브에 저장</label></div><div id="gl"></div></div>
@@ -411,7 +420,7 @@ const perfTable=(pid)=>{const ps=S.perfS[pid];const k=s=>`f${pid}.${s}`;
 <tr><td class="lbl" style="line-height:13pt">교육 과정<br>성취 기준</td><td colspan="4" style="padding:2pt 4pt">${L(k('cur'),{mark:2})}</td></tr>
 ${gradeRows}
 <tr><td class="lbl">평가 요소</td><td colspan="2" style="text-align:center">채점 기준</td><td colspan="2" style="text-align:center">배점</td></tr>${groups}</table>
-<div class="tt"><span class="noprint">${btn('addGroup',pid,'+ 평가 요소 추가')}</span> 배점 합계: <b data-c="pt.${pid}">0</b>점 <span class="warn noprint" data-c="pw.${pid}"></span></div>`};
+<div class="tt noprint"><span class="noprint">${btn('addGroup',pid,'+ 평가 요소 추가')}</span> 배점 합계: <b data-c="pt.${pid}">0</b>점 <span class="warn noprint" data-c="pw.${pid}"></span></div>`};
 
 const HI=(k,d)=>`<input type="text" class="hin" data-k="${k}" data-d="${esc(d)}" spellcheck="false">`;
 const SEC=(n,t,sub)=>`<div class="sec"><div class="n">${n}</div><div class="t">${HI('sec'+n,t)}</div>${sub?`<div class="sub">${HI('secs'+n,sub)}</div>`:''}</div>`;
@@ -681,7 +690,7 @@ function drawBreaks(){
  const units=[...doc.querySelectorAll('.tl,.sec,.h,.blk,.note,.it,tr,.gr>div,.m,.mb')];
  const pos=()=>{const sr=doc.getBoundingClientRect();return units.map(e=>{const r=e.getBoundingClientRect();return{t:(r.top-sr.top)/z,b:(r.bottom-sr.top)/z}})};
  const edit=pos();
- document.body.classList.add('pm');const pm=pos();document.body.classList.remove('pm');
+ const hadPm=document.body.classList.contains('pm');document.body.classList.add('pm');const pm=pos();if(!hadPm)document.body.classList.remove('pm');
  const ok=pm.map(p=>p.b-p.t>0.5);
  const PH=253*96/25.4;
  const ti=units.findIndex(e=>e.classList.contains('tl'));if(ti<0)return;
@@ -695,6 +704,7 @@ function drawBreaks(){
   else units.forEach((e,i)=>{if(ok[i]&&e.matches(HD)&&pm[i].b<=B+1&&pm[i].b>B-60){let j=-1;units.forEach((u,k)=>{if(ok[k]&&!u.matches(HD)&&pm[k].t>=pm[i].b-1&&(j<0||pm[k].t<pm[j].t))j=k});if(j>=0&&pm[j].t>=B-3)bk=Math.min(bk,pm[i].t)}});
   if(bk<=(breaks.length?breaks[breaks.length-1]:start)+40)bk=B;
   breaks.push(bk);B=bk+PH}
+ window.__pg={start,breaks:breaks.slice(),end};
  breaks.forEach((bk,k)=>{let bi=-1;units.forEach((e,i)=>{if(ok[i]&&pm[i].t<=bk+0.5&&(bi<0||pm[i].t>=pm[bi].t))bi=i});
   const y=bi<0?bk:edit[bi].t+(bk-pm[bi].t);
   const d=document.createElement('div');d.className='pgl';d.style.top=y+'px';d.innerHTML='<span>'+(k+2)+'쪽 시작</span>';doc.appendChild(d)})}
@@ -702,5 +712,6 @@ function drawBreaks(){
 window.addEventListener('resize',()=>{fit();schedBreaks()});window.addEventListener('load',schedBreaks);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedBreaks);
 render();fit();schedBreaks();
 </script>
+<script src="export.js"></script>
 </body>
 </html>
