@@ -76,6 +76,23 @@ const cluster=a=>{a=a.slice().sort((x,y)=>x-y);const o=[];a.forEach(v=>{if(!o.le
 const near=(arr,v)=>{let b=0,d=1e9;arr.forEach((x,i)=>{const e=Math.abs(x-v);if(e<d){d=e;b=i}});return b};
 function bdOf(cs,S){const w=parseFloat(cs['border'+S+'Width'])||0,st=cs['border'+S+'Style'];if(!w||st==='none'||st==='hidden')return null;return {st,w,c:hex(cs['border'+S+'Color'])}}
 const wider=(a,b)=>!a?b:!b?a:(b.w>a.w?b:a);
+/* 인접한 칸의 선은 CSS(border-collapse)와 같은 규칙으로 하나로 정한다: 굵은 선 > 종류(이중>실선>점선) */
+const bcls=w=>w<=1.5?1:w<=2.5?2:w<=3.5?3:4;
+const bprio={double:4,solid:3,dashed:2,dotted:1};
+const bwin=(a,b)=>{if(!a)return b;if(!b)return a;const wa=bcls(a.w),wb=bcls(b.w);if(wa!==wb)return wb>wa?b:a;return (bprio[b.st]||0)>(bprio[a.st]||0)?b:a};
+function resolveBorders(rows,nR,nC,tb){
+ const grid=Array.from({length:nR},()=>Array(nC).fill(null));
+ rows.forEach((r,ri)=>r.cells.forEach(c=>{c.row=ri;c.o=Object.assign({},c.b);for(let i=0;i<c.rspan&&ri+i<nR;i++)for(let k=0;k<c.span;k++)if(c.col+k<nC)grid[ri+i][c.col+k]=c}));
+ rows.forEach((r,ri)=>r.cells.forEach(c=>{let t=null,b=null,l=null,rt=null;
+  for(let k=0;k<c.span;k++){
+   const above=c.row>0?grid[c.row-1][c.col+k]:null,below=c.row+c.rspan<nR?grid[c.row+c.rspan][c.col+k]:null;
+   t=bwin(t,bwin(c.o.t,c.row===0?tb.t:(above&&above!==c?above.o.b:null)));
+   b=bwin(b,bwin(c.o.b,c.row+c.rspan>=nR?tb.b:(below&&below!==c?below.o.t:null)))}
+  for(let i=0;i<c.rspan&&c.row+i<nR;i++){
+   const lf=c.col>0?grid[c.row+i][c.col-1]:null,rg=c.col+c.span<nC?grid[c.row+i][c.col+c.span]:null;
+   l=bwin(l,bwin(c.o.l,c.col===0?tb.l:(lf&&lf!==c?lf.o.r:null)));
+   rt=bwin(rt,bwin(c.o.r,c.col+c.span>=nC?tb.r:(rg&&rg!==c?rg.o.l:null)))}
+  c.b={t,b,l,r:rt}}))}
 function tableModel(t){const tr=t.getBoundingClientRect();const tcs=getComputedStyle(t);
  const cellsAll=[...t.rows].flatMap(r=>[...r.cells]);const xs=[];
  cellsAll.forEach(c=>{const r=c.getBoundingClientRect();xs.push(r.left-tr.left,r.right-tr.left)});
@@ -89,6 +106,7 @@ function tableModel(t){const tr=t.getBoundingClientRect();const tcs=getComputedS
    let blocks=parasOf(c.childNodes,c);if(!blocks.length){const p=newPara(c);p.runs.push(Object.assign(runOf(' ',c),{t:' '}));blocks=[p]}
    return {col,span,rspan:rs,b,v:cs.verticalAlign==='top'||cs.verticalAlign==='baseline'?'top':'center',blocks,w:r.width}});
   return {h:rr.height,cells}});
+ resolveBorders(rows,nR,cols.length,tb);
  return {type:'table',cols,rows}}
 function boxTable(bx){const rs=[...bx.querySelectorAll(':scope>.r')];const br=bx.getBoundingClientRect();const k0=rs[0]&&rs[0].children[0].getBoundingClientRect();
  const kw=k0?k0.width:150,tot=br.width;const D={st:'dashed',w:1,c:'000000'};
@@ -114,7 +132,7 @@ function dxPara(p,scale){scale=scale||1;const left=tw(p.left*scale),hang=tw(p.ha
  const ppr='<w:pPr><w:jc w:val="'+(p.align==='justify'?'both':p.align)+'"/>'+((left||hang||first)?'<w:ind w:left="'+left+'"'+(hang?' w:hanging="'+hang+'"':first?' w:firstLine="'+first+'"':'')+'/>':'')+'<w:spacing w:before="'+tw(p.before)+'" w:after="'+tw(p.after)+'" w:line="'+Math.round(p.line*240)+'" w:lineRule="auto"/></w:pPr>';
  return '<w:p>'+ppr+p.runs.map(dxRun).join('')+'</w:p>'}
 const bstyle={solid:'single',dashed:'dashed',double:'double',dotted:'dotted'};
-function dxBorders(b){return '<w:tcBorders>'+[['t','top'],['l','left'],['b','bottom'],['r','right']].map(([k,n])=>{const x=b[k];return x?'<w:'+n+' w:val="'+(bstyle[x.st]||'single')+'" w:sz="'+Math.max(2,Math.min(24,Math.round(x.w*6)))+'" w:space="0" w:color="'+x.c+'"/>':'<w:'+n+' w:val="nil"/>'}).join('')+'</w:tcBorders>'}
+function dxBorders(b){return '<w:tcBorders>'+[['t','top'],['l','left'],['b','bottom'],['r','right']].map(([k,n])=>{const x=b[k];return x?'<w:'+n+' w:val="'+(bstyle[x.st]||'single')+'" w:sz="'+({1:4,2:12,3:18,4:24})[bcls(x.w)]+'" w:space="0" w:color="'+x.c+'"/>':'<w:'+n+' w:val="nil"/>'}).join('')+'</w:tcBorders>'}
 function dxTable(tb){const sum=tb.cols.reduce((a,b)=>a+b,0);const f=sum>TEXT_W_PX?TEXT_W_PX/sum:1;const cols=tb.cols.map(w=>Math.max(60,tw(w*f)));const total=cols.reduce((a,b)=>a+b,0);
  const occ=tb.rows.map(()=>({}));const rowsXml=tb.rows.map((r,ri)=>{const ents=r.cells.map(c=>({c,col:c.col}));
   tb.rows.forEach((rr,rj)=>{if(rj<ri)rr.cells.forEach(c=>{if(rj+c.rspan>ri){for(let k=0;k<c.span;k++)occ[ri][c.col+k]=c}})});
@@ -146,9 +164,9 @@ function hxCtx(){const chars=[],paras=[],bfs=[];const ck={},pk={},bk={};
  return {chars,paras,bfs,
   char(r){const k=[Math.round(r.sz*10),r.b?1:0,r.i?1:0,r.u?1:0,r.c].join('|');if(ck[k]==null){ck[k]=chars.length;chars.push(r)}return ck[k]},
   para(p){const k=[p.align,Math.round(p.left),Math.round(p.hang),Math.round(p.first),Math.round(p.before),Math.round(p.after),Math.round(p.line*20)].join('|');if(pk[k]==null){pk[k]=paras.length;paras.push(p)}return pk[k]},
-  bf(b){const k=['t','r','b','l'].map(s=>b[s]?b[s].st+b[s].w.toFixed(1)+b[s].c:'-').join('|');if(bk[k]==null){bk[k]=bfs.length;bfs.push(b)}return bk[k]}}}
+  bf(b){const k=['t','r','b','l'].map(s=>b[s]?b[s].st+bcls(b[s].w)+b[s].c:'-').join('|');if(bk[k]==null){bk[k]=bfs.length;bfs.push(b)}return bk[k]}}}
 const mmList=[0.1,0.12,0.15,0.2,0.25,0.3,0.4,0.5,0.6,0.7,1.0];
-const hwMm=px=>{const mm=px*0.2646;let b=mmList[0];mmList.forEach(v=>{if(Math.abs(v-mm)<Math.abs(b-mm))b=v});return String(b)+' mm'};
+const hwMm=px=>({1:'0.12 mm',2:'0.5 mm',3:'0.7 mm',4:'1.0 mm'})[bcls(px)];
 const hwType={solid:'SOLID',dashed:'DASH',double:'DOUBLE_SLIM',dotted:'DOT'};
 function hxHeader(base,ctx,c0,p0,b0){let h=base;
  const cx=ctx.chars.map((r,i)=>'<hh:charPr id="'+(c0+i)+'" height="'+Math.max(100,Math.round(r.sz*100))+'" textColor="#'+r.c+'" shadeColor="none" useFontSpace="0" useKerning="0" symMark="NONE" borderFillIDRef="1"><hh:fontRef hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/><hh:ratio hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:spacing hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/><hh:relSz hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:offset hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/>'+(r.i?'<hh:italic/>':'')+(r.b?'<hh:bold/>':'')+'<hh:underline type="'+(r.u?'BOTTOM':'NONE')+'" shape="SOLID" color="#000000"/><hh:strikeout shape="3D" color="#000000"/><hh:outline type="NONE"/><hh:shadow type="NONE" color="#C0C0C0" offsetX="10" offsetY="10"/></hh:charPr>').join('');
