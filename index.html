@@ -562,7 +562,7 @@ window.addEventListener('beforeunload',()=>{try{save()}catch(x){}});
 document.getElementById('docname').value=curRec.name;
 
 /* ===== Google 드라이브 연동 (drive.file 범위: 이 앱이 만든 파일만 접근) ===== */
-const GCID_DEFAULT='';
+const GCID_DEFAULT='620822802689-inib33mja8r00cjmtdokpkg6b573ue1q.apps.googleusercontent.com';
 const gcid=()=>(localStorage.getItem('plan2026-gcid')||GCID_DEFAULT).trim();
 let gTok=null,gExp=0,gClient=null,gFolder=null,gLib=null,gTimer=null,gBusy=false;
 const gOK=()=>!!gTok&&Date.now()<gExp-30000;
