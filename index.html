@@ -178,6 +178,13 @@ input.docname:focus{border-color:var(--accent);background:#fff;box-shadow:none}
 .dinfo span{font-size:12px;color:var(--muted)}
 .dacts{display:flex;gap:6px;flex-wrap:wrap}
 @media print{#dm,#bar{display:none!important}}
+.gdbox .mtools{border-bottom:0}
+.gdh{display:flex;align-items:center;gap:10px;padding:10px 20px;background:#fafbfa;border-bottom:1px solid var(--line)}
+.gdh b{font-size:14px}.gdh span{font-size:12px;color:var(--muted)}
+.gauto{display:flex;align-items:center;gap:6px;font-size:13px;color:#35403e}
+.gauto input{width:15px;height:15px}
+.gmsg{margin:6px 20px;font-size:13px;color:var(--muted)}
+#gl{padding:0 12px 8px}
 @media print{
  .pgl{display:none}
  .layout{display:block;padding:0}.main{zoom:1!important;width:auto}#toc,.sumstrip{display:none}
@@ -198,11 +205,13 @@ input.docname:focus{border-color:var(--accent);background:#fff;box-shadow:none}
 </style>
 </head>
 <body>
-<header id="bar" class="topbar"><div class="tb-doc"><p class="eyebrow">교수학습평가계획서 · 문서</p><div class="docline"><input id="docname" class="docname" type="text" value="" spellcheck="false" title="문서 이름 (클릭해서 수정)"><span id="saved" class="saved"></span></div></div>
+<header id="bar" class="topbar"><div class="tb-doc"><p class="eyebrow">교수학습평가계획서 · 문서</p><div class="docline"><input id="docname" class="docname" type="text" value="" spellcheck="false" title="문서 이름 (클릭해서 수정)"><span id="saved" class="saved"></span><span id="gchip" class="saved"></span></div></div>
 <div class="tb-actions"><div class="seg"><button id="segE" class="on" onclick="setPv(false)">편집</button><button id="segP" onclick="setPv(true)">미리보기</button></div>
 <button class="ghost" onclick="newDoc()">+ 새 문서</button><button class="ghost" onclick="openDocs()">문서 목록 · 불러오기</button><button class="ghost" onclick="manualSave()">저장</button><button class="primary" onclick="window.print()">인쇄 / PDF 저장</button><input id="f" type="file" accept=".json" hidden></div></header>
 <div id="dm" class="modal" hidden><div class="mbox"><div class="mh"><b>문서 목록</b><span>과목·학기별로 문서를 따로 저장하고 불러옵니다.</span><button onclick="closeDocs()">닫기</button></div>
-<div class="mtools"><button class="pri" onclick="newDoc()">+ 새 문서</button><button onclick="importPick()">JSON 가져오기</button><button onclick="exportAll()">전체 백업(JSON)</button><button class="dng" onclick="resetCur()">현재 문서 초기화</button></div><div id="dl"></div></div></div>
+<div class="mtools"><button class="pri" onclick="newDoc()">+ 새 문서</button><button onclick="importPick()">JSON 가져오기</button><button onclick="exportAll()">전체 백업(JSON)</button><button class="dng" onclick="resetCur()">현재 문서 초기화</button></div><div class="gdbox"><div class="gdh"><b>☁ Google 드라이브</b><span id="gstat"></span></div>
+<div class="mtools"><button id="gconn" class="pri" onclick="gConnectBtn()">Google 계정 연결</button><button onclick="gSaveCur()">현재 문서를 드라이브에 저장</button><button onclick="gOpenList()">드라이브에서 불러오기</button><button onclick="gSettings()">연결 설정</button><label class="gauto"><input type="checkbox" id="gauto" onchange="gAutoToggle(this.checked)"> 수정하면 자동으로 드라이브에 저장</label></div><div id="gl"></div></div>
+<div class="gdh" style="border-top:1px solid var(--line)"><b>이 기기에 저장된 문서</b></div><div id="dl"></div></div></div>
 <div class="layout"><nav id="toc" class="noprint"><p>목차</p><div id="tocl"></div></nav>
 <div class="main" id="main"><section class="sumstrip noprint"><div><b><span data-c="s.hours">0</span> / <span data-c="s.target">–</span></b><span class="l">시수 누계 / 기준</span></div><div><b data-c="s.ratio">–</b><span class="l">정기시험 : 수행평가 (%)</span></div><div><b data-c="s.ns">–</b><span class="l">논·서술형 반영비율</span></div><div><b><span data-c="s.pts">0</span>점</b><span class="l">수행평가 영역 만점 합계</span></div></section>
 <div class="sheet" id="doc"></div></div></div>
@@ -230,7 +239,7 @@ let curRec=DB.list.find(d=>d.id===DB.cur)||DB.list[0];DB.cur=curRec.id;
 S=curRec.data;
 let V=S.vals;
 const persist=()=>{try{localStorage.setItem(DK,JSON.stringify(DB));return true}catch(e){return false}};
-const save=()=>{curRec.data=S;curRec.updated=Date.now();const ok=persist();const el=document.getElementById('saved');if(el)el.textContent=ok?'자동 저장됨 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):'⚠ 저장 실패(저장 공간 부족) - JSON으로 내보내세요'};
+const save=()=>{curRec.data=S;curRec.updated=Date.now();const ok=persist();const el=document.getElementById('saved');if(el)el.textContent=ok?'자동 저장됨 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):'⚠ 저장 실패(저장 공간 부족) - JSON으로 내보내세요';if(typeof gSched==='function')gSched()};
 
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
 const num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[^\d.\-]/g,''));return isNaN(n)?0:n};
@@ -531,7 +540,7 @@ function importFile(f){if(!f)return;f.text().then(t=>{try{const o=JSON.parse(t);
  persist();renderDocs();alert(docs.length+'개 문서를 가져왔습니다. 목록에서 열 수 있습니다.')}catch(x){alert('올바른 파일이 아닙니다.')}})}
 function resetCur(){if(!confirm('현재 문서의 입력 내용을 모두 지우고 처음 상태로 되돌립니다. 계속할까요?'))return;
  curRec.data=S=fresh();V=S.vals;ensure();persist();afterSwitch();closeDocs()}
-function manualSave(){save();const el=document.getElementById('saved');if(el){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}}
+function manualSave(){save();if(typeof gAutoOn==='function'&&gAutoOn())gSaveCur();const el=document.getElementById('saved');if(el){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}}
 function openDocs(){save();renderDocs();document.getElementById('dm').hidden=false}
 function closeDocs(){document.getElementById('dm').hidden=true}
 function renderDocs(){const box=document.getElementById('dl');if(!box)return;box.innerHTML='';
@@ -540,7 +549,7 @@ function renderDocs(){const box=document.getElementById('dl');if(!box)return;box
   const info=document.createElement('div');info.className='dinfo';
   const nm=document.createElement('b');nm.textContent=r.name;info.appendChild(nm);
   if(r===curRec){const bd=document.createElement('em');bd.textContent='현재 문서';info.appendChild(bd)}
-  const meta=document.createElement('span');meta.textContent='수정 '+fmtDate(r.updated);info.appendChild(meta);
+  const meta=document.createElement('span');meta.textContent='수정 '+fmtDate(r.updated)+(r.driveId?' · ☁ 드라이브 연결됨':'');info.appendChild(meta);
   const acts=document.createElement('div');acts.className='dacts';
   [['열기',()=>{openDoc(r.id);closeDocs()},'pri'],['이름 변경',()=>renameDoc(r.id)],['복제',()=>dupDoc(r.id)],['내보내기',()=>exportDoc(r.id)],['삭제',()=>delDoc(r.id),'dng']].forEach(([t,f,c])=>{
    const b=document.createElement('button');b.textContent=t;if(c)b.className=c;b.onclick=f;acts.appendChild(b)});
@@ -551,6 +560,75 @@ document.getElementById('dm').addEventListener('click',e=>{if(e.target.id==='dm'
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!document.getElementById('dm').hidden)closeDocs();else if(document.body.classList.contains('pv'))setPv(false)}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();manualSave()}});
 window.addEventListener('beforeunload',()=>{try{save()}catch(x){}});
 document.getElementById('docname').value=curRec.name;
+
+/* ===== Google 드라이브 연동 (drive.file 범위: 이 앱이 만든 파일만 접근) ===== */
+const GCID_DEFAULT='';
+const gcid=()=>(localStorage.getItem('plan2026-gcid')||GCID_DEFAULT).trim();
+let gTok=null,gExp=0,gClient=null,gFolder=null,gLib=null,gTimer=null,gBusy=false;
+const gOK=()=>!!gTok&&Date.now()<gExp-30000;
+const gAutoOn=()=>localStorage.getItem('plan2026-gauto')==='1';
+function gStat(t){const e=document.getElementById('gstat');if(e)e.textContent=t}
+function gChip(t){const e=document.getElementById('gchip');if(e)e.textContent=t}
+function gLoadLib(){if(gLib)return gLib;gLib=new Promise((res,rej)=>{if(window.google&&google.accounts&&google.accounts.oauth2)return res();
+ const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=()=>res();s.onerror=()=>{gLib=null;rej(new Error('Google 로그인 스크립트를 불러오지 못했습니다(인터넷 연결 확인).'))};document.head.appendChild(s)});return gLib}
+async function gConnect(){const id=gcid();if(!id){gSettings();return Promise.reject(new Error('noclient'))}
+ await gLoadLib();
+ return new Promise((res,rej)=>{
+  if(!gClient)gClient=google.accounts.oauth2.initTokenClient({client_id:id,scope:'https://www.googleapis.com/auth/drive.file',
+   callback:r=>{if(r.error){gStat('연결 실패: '+r.error);rej(new Error(r.error));return}gTok=r.access_token;gExp=Date.now()+(+r.expires_in||3600)*1000;gStat('연결됨');gChip('☁ 드라이브 연결됨');res(gTok)},
+   error_callback:e=>{gStat('연결이 취소되었거나 실패했습니다');rej(new Error((e&&e.type)||'popup'))}});
+  gClient.requestAccessToken({prompt:''})})}
+async function gApi(url,opt={},silent=false){
+ if(!gOK()){if(silent)throw new Error('noauth');await gConnect()}
+ const r=await fetch(url,Object.assign({},opt,{headers:Object.assign({Authorization:'Bearer '+gTok},opt.headers||{})}));
+ if(r.status===401){gTok=null;if(silent)throw new Error('noauth');await gConnect();return gApi(url,opt,silent)}
+ if(!r.ok)throw new Error('Drive '+r.status+' '+(await r.text()).slice(0,160));return r}
+async function gFolderId(silent){if(gFolder)return gFolder;
+ const q=encodeURIComponent("name='교수학습평가계획서' and mimeType='application/vnd.google-apps.folder' and trashed=false");
+ let j=await(await gApi('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id)',{},silent)).json();
+ if(j.files&&j.files[0])return gFolder=j.files[0].id;
+ j=await(await gApi('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'교수학습평가계획서',mimeType:'application/vnd.google-apps.folder'})},silent)).json();
+ return gFolder=j.id}
+async function gSave(rec,silent){const folder=await gFolderId(silent);
+ const body={format:'assessment-plan',version:1,name:rec.name,updated:rec.updated,data:rec.data};
+ const bnd='ap'+Math.random().toString(36).slice(2);
+ const mk=m=>'--'+bnd+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(m)+'\r\n--'+bnd+'\r\nContent-Type: application/json\r\n\r\n'+JSON.stringify(body)+'\r\n--'+bnd+'--';
+ const fname=rec.name.replace(/[\\/:*?"<>|]/g,'_')+'.json';
+ const upd=!!rec.driveId;
+ const url='https://www.googleapis.com/upload/drive/v3/files'+(upd?'/'+rec.driveId:'')+'?uploadType=multipart&fields=id,modifiedTime';
+ let r;try{r=await gApi(url,{method:upd?'PATCH':'POST',headers:{'Content-Type':'multipart/related; boundary='+bnd},body:mk(upd?{name:fname}:{name:fname,mimeType:'application/json',parents:[folder]})},silent)}
+ catch(e){if(upd&&/Drive 404/.test(e.message)){rec.driveId=null;return gSave(rec,silent)}throw e}
+ const j=await r.json();rec.driveId=j.id;rec.driveSynced=Date.now();persist();return j}
+async function gList(){const folder=await gFolderId();
+ const q=encodeURIComponent("'"+folder+"' in parents and trashed=false");
+ const j=await(await gApi('https://www.googleapis.com/drive/v3/files?q='+q+'&orderBy='+encodeURIComponent('modifiedTime desc')+'&pageSize=100&fields=files(id,name,modifiedTime)')).json();return j.files||[]}
+async function gGet(id){return(await gApi('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media')).json()}
+async function gDel(id){await gApi('https://www.googleapis.com/drive/v3/files/'+id,{method:'DELETE'})}
+const hhmm=()=>new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+async function gSaveCur(){save();gStat('저장 중…');
+ try{await gSave(curRec,false);gStat('드라이브에 저장됨 '+hhmm());gChip('☁ 드라이브 저장됨 '+hhmm());renderDocs()}
+ catch(e){if(e.message!=='noclient'){gStat('저장 실패: '+e.message);gChip('☁ 저장 실패')}}}
+function gSched(){if(!gAutoOn()||!curRec.driveId&&!gOK())return;clearTimeout(gTimer);gTimer=setTimeout(async()=>{
+ if(gBusy)return;if(!gOK()){gChip('☁ 재연결 필요 (저장 버튼)');return}
+ gBusy=true;gChip('☁ 저장 중…');try{await gSave(curRec,true);gChip('☁ 드라이브 저장됨 '+hhmm())}catch(e){gChip('☁ 재연결 필요 (저장 버튼)')}gBusy=false},4000)}
+async function gOpenList(){const box=document.getElementById('gl');box.innerHTML='<p class="gmsg">드라이브 목록을 불러오는 중…</p>';
+ try{const files=await gList();box.innerHTML='';if(!files.length){box.innerHTML='<p class="gmsg">드라이브에 저장된 문서가 없습니다.</p>';return}
+  files.forEach(f=>{const row=document.createElement('div');row.className='drow';
+   const info=document.createElement('div');info.className='dinfo';const b=document.createElement('b');b.textContent=f.name.replace(/\.json$/i,'');const sp=document.createElement('span');sp.textContent='드라이브 수정 '+fmtDate(f.modifiedTime);info.appendChild(b);info.appendChild(sp);
+   const acts=document.createElement('div');acts.className='dacts';
+   [['불러오기',()=>gPull(f),'pri'],['드라이브에서 삭제',async()=>{if(!confirm('드라이브의 "'+b.textContent+'" 파일을 삭제할까요?'))return;try{await gDel(f.id);DB.list.forEach(d=>{if(d.driveId===f.id)d.driveId=null});persist();gOpenList();renderDocs()}catch(e){alert('삭제 실패: '+e.message)}},'dng']].forEach(([t,fn,c])=>{const bt=document.createElement('button');bt.textContent=t;if(c)bt.className=c;bt.onclick=fn;acts.appendChild(bt)});
+   row.appendChild(info);row.appendChild(acts);box.appendChild(row)})}
+ catch(e){box.innerHTML='';if(e.message!=='noclient'){const p=document.createElement('p');p.className='gmsg';p.textContent='불러오기 실패: '+e.message;box.appendChild(p)}}}
+async function gPull(f){try{const o=await gGet(f.id);if(!o||!o.data||!o.data.vals)throw new Error('올바른 문서 파일이 아닙니다.');
+ const local=DB.list.find(d=>d.driveId===f.id);
+ if(local){if(!confirm('이 기기에 같은 문서("'+local.name+'")가 있습니다. 드라이브 내용으로 덮어쓸까요?'))return;local.data=o.data;local.name=o.name||local.name;local.updated=Date.now();local.driveSynced=Date.now();persist();openDoc(local.id)}
+ else{const r={id:uidDoc(),name:o.name||f.name.replace(/\.json$/i,''),updated:Date.now(),data:o.data,driveId:f.id,driveSynced:Date.now()};DB.list.unshift(r);persist();openDoc(r.id)}
+ closeDocs()}catch(e){alert('불러오기 실패: '+e.message)}}
+function gSettings(){const cur=gcid();const v=prompt('Google OAuth 클라이언트 ID를 붙여넣으세요.\n(발급 방법은 저장소의 GOOGLE-DRIVE-SETUP.md 참고)\n비워 두면 연결을 끕니다.',cur);if(v===null)return;
+ localStorage.setItem('plan2026-gcid',v.trim());gClient=null;gTok=null;gStat(v.trim()?'클라이언트 ID 저장됨 · [Google 계정 연결]을 누르세요':'연결 설정 없음')}
+async function gConnectBtn(){try{await gConnect();gStat('연결됨')}catch(e){if(e.message!=='noclient')gStat('연결 실패: '+e.message)}}
+function gAutoToggle(on){localStorage.setItem('plan2026-gauto',on?'1':'0');if(on)gSched()}
+(function(){const a=document.getElementById('gauto');if(a)a.checked=gAutoOn();gStat(gcid()?'연결 안 됨 · [Google 계정 연결]을 누르세요':'연결 설정이 필요합니다 · [연결 설정]')})();
 
 let pgT;function schedBreaks(){clearTimeout(pgT);pgT=setTimeout(drawBreaks,150)}
 function drawBreaks(){
