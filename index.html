@@ -151,6 +151,32 @@ body.pv .ls.m1>div:has(>br:only-child):before,body.pv .ls.m2>div:has(>br:only-ch
 body.pm .noprint,body.pm button.ctl,body.pm .warn,body.pm .hdr,body.pm .it .ctls{display:none!important}
 body.pm .ph>div:only-child:has(>br:only-child):before{content:""}
 body.pm .ls.m1>div:has(>br:only-child):before,body.pm .ls.m2>div:has(>br:only-child):before{content:""}
+input.docname{font:inherit;font-size:20px;font-weight:750;border:1px solid transparent;background:transparent;border-radius:6px;padding:2px 8px;margin-left:-8px;width:min(340px,48vw);height:auto;color:var(--ink);line-height:1.3}
+input.docname:hover{border-color:#cdd5cd;background:#fff}
+input.docname:focus{border-color:var(--accent);background:#fff;box-shadow:none}
+.docline{display:flex;align-items:center;gap:8px}
+.saved{font-size:12px;color:var(--muted);white-space:nowrap;transition:color .2s}
+.saved.flash{color:var(--accent);font-weight:700}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(30,37,36,.45);display:flex;align-items:flex-start;justify-content:center;padding:6vh 14px;font-family:"Segoe UI","Malgun Gothic",system-ui,sans-serif;color:var(--ink)}
+.modal[hidden]{display:none}
+.mbox{background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 24px 60px rgba(32,44,40,.25);width:min(720px,100%);max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
+.mh{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line);background:var(--soft)}
+.mh b{font-size:17px}.mh span{color:var(--muted);font-size:12px;flex:1}
+.mbox button{font:inherit;font-size:13px;min-height:34px;padding:0 12px;border-radius:7px;border:1px solid #cdd5cd;background:#fff;color:#35403e;cursor:pointer}
+.mbox button:hover{border-color:var(--accent);color:var(--accent)}
+.mbox button.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.mbox button.pri:hover{background:var(--accent-d);color:#fff}
+.mbox button.dng:hover{border-color:#9e2f38;color:#9e2f38}
+.mtools{display:flex;gap:8px;flex-wrap:wrap;padding:12px 20px;border-bottom:1px solid var(--line)}
+#dl{overflow:auto;padding:10px 12px 16px}
+.drow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line);border-radius:8px;margin:8px 0}
+.drow.cur{border-color:var(--accent);background:#f3f8f6}
+.dinfo{display:flex;flex-direction:column;gap:3px;min-width:0}
+.dinfo b{font-size:15px;word-break:break-all}
+.dinfo em{font-style:normal;font-size:11px;font-weight:800;color:var(--accent)}
+.dinfo span{font-size:12px;color:var(--muted)}
+.dacts{display:flex;gap:6px;flex-wrap:wrap}
+@media print{#dm,#bar{display:none!important}}
 @media print{
  .pgl{display:none}
  .layout{display:block;padding:0}.main{zoom:1!important;width:auto}#toc,.sumstrip{display:none}
@@ -171,9 +197,11 @@ body.pm .ls.m1>div:has(>br:only-child):before,body.pm .ls.m2>div:has(>br:only-ch
 </style>
 </head>
 <body>
-<header id="bar" class="topbar noprint"><div><p class="eyebrow">교수학습평가계획서</p><h1 id="ttl">2026학년도 1학기 작성</h1></div>
+<header id="bar" class="topbar"><div class="tb-doc"><p class="eyebrow">교수학습평가계획서 · 문서</p><div class="docline"><input id="docname" class="docname" type="text" value="" spellcheck="false" title="문서 이름 (클릭해서 수정)"><span id="saved" class="saved"></span></div></div>
 <div class="tb-actions"><div class="seg"><button id="segE" class="on" onclick="setPv(false)">편집</button><button id="segP" onclick="setPv(true)">미리보기</button></div>
-<button class="ghost" onclick="saveJson()">JSON 저장</button><button class="ghost" onclick="document.getElementById('f').click()">불러오기</button><button class="ghost danger" onclick="resetAll()">전체 초기화</button><button class="primary" onclick="window.print()">인쇄 / PDF 저장</button><input id="f" type="file" accept=".json" hidden></div></header>
+<button class="ghost" onclick="newDoc()">+ 새 문서</button><button class="ghost" onclick="openDocs()">문서 목록 · 불러오기</button><button class="ghost" onclick="manualSave()">저장</button><button class="primary" onclick="window.print()">인쇄 / PDF 저장</button><input id="f" type="file" accept=".json" hidden></div></header>
+<div id="dm" class="modal" hidden><div class="mbox"><div class="mh"><b>문서 목록</b><span>과목·학기별로 문서를 따로 저장하고 불러옵니다.</span><button onclick="closeDocs()">닫기</button></div>
+<div class="mtools"><button class="pri" onclick="newDoc()">+ 새 문서</button><button onclick="importPick()">JSON 가져오기</button><button onclick="exportAll()">전체 백업(JSON)</button><button class="dng" onclick="resetCur()">현재 문서 초기화</button></div><div id="dl"></div></div></div>
 <div class="layout"><nav id="toc" class="noprint"><p>목차</p><div id="tocl"></div></nav>
 <div class="main" id="main"><section class="sumstrip noprint"><div><b><span data-c="s.hours">0</span> / <span data-c="s.target">–</span></b><span class="l">시수 누계 / 기준</span></div><div><b data-c="s.ratio">–</b><span class="l">정기시험 : 수행평가 (%)</span></div><div><b data-c="s.ns">–</b><span class="l">논·서술형 반영비율</span></div><div><b><span data-c="s.pts">0</span>점</b><span class="l">수행평가 영역 만점 합계</span></div></section>
 <div class="sheet" id="doc"></div></div></div>
@@ -191,10 +219,17 @@ function addPerf(s){const id=++s.uid;const ps={groups:[],lines:{},grades:[]};
  for(let i=0;i<5;i++){const g=++s.uid;ps.grades.push(g);s.vals['g'+g+'.l']='ABCDE'[i]}
  s.perfS[id]=ps;s.perfs.push(id)}
 function addGroup(s,ps){const g=++s.uid;ps.groups.push(g);ps.lines[g]=[];for(let i=0;i<5;i++)ps.lines[g].push(++s.uid)}
-try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!S||!S.vals)S=fresh();
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
-const V=S.vals;
+const DK='plan2026-docs';let DB=null;
+try{DB=JSON.parse(localStorage.getItem(DK))}catch(e){}
+if(!DB||!Array.isArray(DB.list))DB={list:[],cur:null};
+const uidDoc=()=>'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+if(!DB.list.length){let old=null;try{old=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+ const rec={id:uidDoc(),name:'내 문서 1',updated:Date.now(),data:(old&&old.vals)?old:fresh()};DB.list.push(rec);DB.cur=rec.id}
+let curRec=DB.list.find(d=>d.id===DB.cur)||DB.list[0];DB.cur=curRec.id;
+S=curRec.data;
+let V=S.vals;
+const persist=()=>{try{localStorage.setItem(DK,JSON.stringify(DB));return true}catch(e){return false}};
+const save=()=>{curRec.data=S;curRec.updated=Date.now();const ok=persist();const el=document.getElementById('saved');if(el)el.textContent=ok?'자동 저장됨 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):'⚠ 저장 실패(저장 공간 부족) - JSON으로 내보내세요'};
 
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
 const num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[^\d.\-]/g,''));return isNaN(n)?0:n};
@@ -272,7 +307,8 @@ function addItem(name,iid,sub){const arr=S.lists[name],i=arr.findIndex(x=>x.id==
  let at=i+1;if(cur.lv===0)while(at<arr.length&&arr[at].lv===1)at++;
  const it={id:++S.uid,lv:sub?1:(LMODE[name]==='ga'?cur.lv:0),h:'',c:cur.c};arr.splice(at,0,it);return it.id}
 
-if(!S.lists)S.lists=defLists();if(!S.gtn)S.gtn={A:6,B:4};if(S.pcols.length&&!has(V['c'+S.pcols[0]+'.pt']))balance(null);
+function ensure(){if(!S.lists)S.lists=defLists();if(!S.gtn)S.gtn={A:6,B:4};if(S.pcols.length&&!has(V['c'+S.pcols[0]+'.pt']))balance(null)}
+ensure();
 
 const MONTHS=['3월\n1주~\n4주','4월\n1주~\n4주','5월\n1주~\n4주','6월\n1주~\n4주','7월\n1주'];
 const methodBox=id=>`<div class="m"><div class="lab">수업·평가 방법 / 수업·평가 연계의 주안점</div><div class="bx">
@@ -341,12 +377,9 @@ const SEC=(n,t)=>`<div class="sec"><div class="n">${n}</div><div class="t">${HI(
 const HDR0='▣ 2026학년도 학업성적관리지침 변경 사항 반영 ▣';
 function build(){
  return `<div class="hdr">${HI('hdr',HDR0)}</div>
-<div class="tl" style="font-size:17.5pt;line-height:22pt;letter-spacing:-.2pt;margin-bottom:12pt">${HI('title','2026학년도 1학기 교수학습평가계획서')}(<span data-c="gradeT"> </span>)</div>
-<table style="width:100%;table-layout:fixed;border-top:1.5pt solid #000;border-bottom:2pt solid #000"><colgroup><col style="width:114.5pt"><col style="width:64.5pt"><col style="width:254pt"><col></colgroup>
-<tr style="height:18pt;font-weight:bold;font-size:12.5pt;text-align:center"><td style="border:.5pt solid #000;border-top:0;border-left:0">교과</td><td style="border:.5pt solid #000;border-top:0">학년</td><td style="border:.5pt solid #000;border-top:0">과목명</td><td style="border:.5pt solid #000;border-top:0;border-right:0">학점</td></tr>
-<tr style="height:19pt"><td style="border:.5pt solid #000;border-left:0">${T('info.subj','','text-align:center;font-size:12.5pt')}</td><td style="border:.5pt solid #000">${T('info.grade','','text-align:center;font-size:12.5pt')}</td><td style="border:.5pt solid #000">${T('info.name','','text-align:center;font-size:12.5pt')}</td><td style="border:.5pt solid #000;border-right:0">${T('info.credit','','text-align:center;font-size:12.5pt')}</td></tr></table>
+<div class="tl" style="font-size:17.5pt;line-height:22pt;letter-spacing:-.2pt;margin-bottom:18pt">${HI('title','2026학년도 1학기 교수학습평가계획서')}</div>
 ${SEC('Ⅰ','교수학습·평가 방법')}
-<div class="red b" style="font-size:10.5pt;margin:12pt 0 8pt;line-height:16pt">▶ <span data-c="hnote"></span></div><div class="warn noprint" data-c="hwarn"></div>
+<div class="red b" style="font-size:10.5pt;margin:12pt 0 8pt;line-height:16pt">▶ <input type="text" class="hin" data-k="hnote.pre" data-d="" placeholder="1학년 한국사1" style="display:inline-block;width:auto;min-width:8em;vertical-align:baseline" spellcheck="false"> 시수 누계 기준(<input type="text" class="hin" data-k="info.credit" data-d="" placeholder="3" inputmode="numeric" style="display:inline-block;width:auto;min-width:1.2em;text-align:center;vertical-align:baseline" spellcheck="false">학점 <span data-c="s.target">–</span>시수)</div><div class="warn noprint" data-c="hwarn"></div>
 <div>${S.periods.map(periodBlock).join('')}</div>
 <div class="noprint addrow">${btn('addPeriod',0,'+ 시기 블록 추가')}</div>
 ${SEC('Ⅱ','평가 세부 계획')}
@@ -391,7 +424,6 @@ function perfTotal(pid){const ps=S.perfS[pid];if(!ps)return 0;let s=0;ps.groups.
 function recompute(){
  const g=V['info.grade'];setC('gradeT',has(g)?` ${String(g).trim()}학년`:' ');
  const cr=num(V['info.credit']),target=cr*16;
- setC('hnote',`${has(g)?String(g).trim()+'학년 ':''}${has(V['info.name'])?String(V['info.name']).trim()+' ':''}시수 누계 기준(${cr?cr+'학점 '+target+'시수':'1학점 16시수, 2학점 32시수, 3학점 48시수, 4학점 64시수'})`);
  let cum=0,any=false;
  S.periods.forEach(id=>{const h=V[`p${id}.hours`];if(has(h)){any=true;cum+=num(h)}setC('cum.'+id,any?fmt(cum):'')});
  setC('hwarn',(any&&cr&&cum!==target)?`※ 시수 누계가 ${fmt(cum)}시수입니다(기준 ${target}시수).`:'');
@@ -471,9 +503,53 @@ function buildToc(){const box=document.getElementById('tocl');if(!box)return;con
  doc.querySelectorAll('.sec .t input,.h input').forEach(i=>{items.push([i.value,()=>i.closest('.sec,.h').scrollIntoView({behavior:'smooth',block:'start'})])});
  box.innerHTML='';items.forEach(([t,f])=>{const a=document.createElement('a');a.textContent=t;a.onclick=f;box.appendChild(a)})}
 function fit(){const toc=document.getElementById('toc'),m=document.getElementById('main');const tocW=getComputedStyle(toc).display==='none'?0:200;const avail=innerWidth-tocW-32;const z=Math.min(1,avail/793);m.style.zoom=z<1?z:''}
-function resetAll(){if(confirm('입력한 모든 내용을 지우고 처음 상태로 되돌립니다. 계속할까요?')){try{localStorage.removeItem(KEY)}catch(e){}location.reload()}}
-function saveJson(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='교수학습평가계획서.json';a.click()}
-document.getElementById('f').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const o=JSON.parse(t);if(!o.vals)throw 0;localStorage.setItem(KEY,JSON.stringify(o));location.reload()}catch(x){alert('올바른 파일이 아닙니다.')}})};
+/* ===== 문서 관리(과목·학기별 저장/불러오기) ===== */
+const fmtDate=t=>{const d=new Date(t),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())};
+function afterSwitch(){document.getElementById('docname').value=curRec.name;render();fit();schedBreaks();scrollTo(0,0)}
+function openDoc(id){const r=DB.list.find(d=>d.id===id);if(!r)return;if(r!==curRec)save();curRec=r;DB.cur=id;S=r.data;V=S.vals;ensure();persist();afterSwitch();renderDocs()}
+function newDoc(){const name=prompt('새 문서 이름을 입력하세요 (예: 한국사1 · 2026-1학기)','');if(name===null)return;
+ const r={id:uidDoc(),name:name.trim()||'새 문서',updated:Date.now(),data:fresh()};DB.list.unshift(r);openDoc(r.id);closeDocs()}
+function dupDoc(id){const r=DB.list.find(d=>d.id===id);if(!r)return;if(r===curRec)save();
+ const nm=prompt('복제한 문서의 이름',r.name+' (복사)');if(nm===null)return;
+ DB.list.unshift({id:uidDoc(),name:nm.trim()||r.name+' (복사)',updated:Date.now(),data:JSON.parse(JSON.stringify(r.data))});persist();renderDocs()}
+function renameDoc(id){const r=DB.list.find(d=>d.id===id);if(!r)return;const nm=prompt('문서 이름',r.name);if(nm===null||!nm.trim())return;r.name=nm.trim();if(r===curRec)document.getElementById('docname').value=r.name;persist();renderDocs()}
+function delDoc(id){const r=DB.list.find(d=>d.id===id);if(!r||!confirm('"'+r.name+'" 문서를 삭제할까요? 되돌릴 수 없습니다.'))return;
+ DB.list=DB.list.filter(d=>d.id!==id);if(!DB.list.length)DB.list.push({id:uidDoc(),name:'새 문서',updated:Date.now(),data:fresh()});
+ if(id===curRec.id){curRec=DB.list[0];DB.cur=curRec.id;S=curRec.data;V=S.vals;ensure();afterSwitch()}persist();renderDocs()}
+function dl(name,obj){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj)],{type:'application/json'}));a.download=name.replace(/[\\/:*?"<>|]/g,'_')+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+function exportDoc(id){const r=DB.list.find(d=>d.id===id);if(!r)return;if(r===curRec)save();dl(r.name,{format:'assessment-plan',version:1,name:r.name,data:r.data})}
+function exportAll(){save();dl('교수학습평가계획서_전체백업_'+fmtDate(Date.now()).slice(0,10),{format:'assessment-plan-backup',version:1,docs:DB.list.map(d=>({name:d.name,data:d.data}))})}
+function importPick(){document.getElementById('f').click()}
+function importFile(f){if(!f)return;f.text().then(t=>{try{const o=JSON.parse(t);let docs=[];
+ if(o.format==='assessment-plan-backup'&&Array.isArray(o.docs))docs=o.docs.filter(d=>d&&d.data&&d.data.vals);
+ else if(o.format==='assessment-plan'&&o.data&&o.data.vals)docs=[o];
+ else if(o.vals)docs=[{name:f.name.replace(/\.json$/i,''),data:o}];
+ if(!docs.length)throw 0;
+ docs.forEach(d=>DB.list.unshift({id:uidDoc(),name:d.name||'가져온 문서',updated:Date.now(),data:d.data}));
+ persist();renderDocs();alert(docs.length+'개 문서를 가져왔습니다. 목록에서 열 수 있습니다.')}catch(x){alert('올바른 파일이 아닙니다.')}})}
+function resetCur(){if(!confirm('현재 문서의 입력 내용을 모두 지우고 처음 상태로 되돌립니다. 계속할까요?'))return;
+ curRec.data=S=fresh();V=S.vals;ensure();persist();afterSwitch();closeDocs()}
+function manualSave(){save();const el=document.getElementById('saved');if(el){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}}
+function openDocs(){save();renderDocs();document.getElementById('dm').hidden=false}
+function closeDocs(){document.getElementById('dm').hidden=true}
+function renderDocs(){const box=document.getElementById('dl');if(!box)return;box.innerHTML='';
+ DB.list.slice().sort((a,b)=>b.updated-a.updated).forEach(r=>{
+  const row=document.createElement('div');row.className='drow'+(r===curRec?' cur':'');
+  const info=document.createElement('div');info.className='dinfo';
+  const nm=document.createElement('b');nm.textContent=r.name;info.appendChild(nm);
+  if(r===curRec){const bd=document.createElement('em');bd.textContent='현재 문서';info.appendChild(bd)}
+  const meta=document.createElement('span');meta.textContent='수정 '+fmtDate(r.updated);info.appendChild(meta);
+  const acts=document.createElement('div');acts.className='dacts';
+  [['열기',()=>{openDoc(r.id);closeDocs()},'pri'],['이름 변경',()=>renameDoc(r.id)],['복제',()=>dupDoc(r.id)],['내보내기',()=>exportDoc(r.id)],['삭제',()=>delDoc(r.id),'dng']].forEach(([t,f,c])=>{
+   const b=document.createElement('button');b.textContent=t;if(c)b.className=c;b.onclick=f;acts.appendChild(b)});
+  row.appendChild(info);row.appendChild(acts);box.appendChild(row)})}
+document.getElementById('docname').addEventListener('input',e=>{curRec.name=e.target.value||'이름 없음';persist()});
+document.getElementById('f').onchange=e=>{importFile(e.target.files[0]);e.target.value=''};
+document.getElementById('dm').addEventListener('click',e=>{if(e.target.id==='dm')closeDocs()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!document.getElementById('dm').hidden)closeDocs();else if(document.body.classList.contains('pv'))setPv(false)}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();manualSave()}});
+window.addEventListener('beforeunload',()=>{try{save()}catch(x){}});
+document.getElementById('docname').value=curRec.name;
+
 let pgT;function schedBreaks(){clearTimeout(pgT);pgT=setTimeout(drawBreaks,150)}
 function drawBreaks(){
  doc.querySelectorAll('.pgl').forEach(e=>e.remove());
