@@ -5,6 +5,7 @@ const DEFAULT_URL='https://script.google.com/macros/s/AKfycbwGKrt1WKkr98wLeHUhhG
 const LS_URL='plan2026-submit-url',LS_WHO='plan2026-submit-who';
 const MAX_BYTES=12*1024*1024;   // 전송 상한(JSON+PDF, base64 전)
 const url=()=>(localStorage.getItem(LS_URL)||DEFAULT_URL).trim();
+window.__submitUrl=url;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 
