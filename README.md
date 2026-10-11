@@ -8,3 +8,5 @@
 - 편집/미리보기 전환, 인쇄(PDF 저장) 및 쪽 구분선 표시
 
 - Google 드라이브 저장/불러오기: [GOOGLE-DRIVE-SETUP.md](GOOGLE-DRIVE-SETUP.md) 참고
+
+- 제출하기(관리자에게 JSON+PDF 제출): [SUBMIT-SETUP.md](SUBMIT-SETUP.md) 참고
