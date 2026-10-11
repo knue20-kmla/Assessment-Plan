@@ -87,7 +87,7 @@ $('ssend').onclick=async function(){
   let j=null;try{j=await r.json()}catch(e){}
   if(!j)throw new Error('제출 결과를 확인하지 못했습니다. 관리자에게 도착했는지 확인해 주세요. (응답 '+r.status+')');
   if(!j.ok)throw new Error(j.error||'제출에 실패했습니다.');
-  curRec.submits=(curRec.submits||[]).concat([{at:Date.now(),id:j.id||''}]);if(typeof persist==='function')persist();
+  curRec.submits=(curRec.submits||[]).concat([{at:Date.now(),id:j.id||''}]);if(typeof persist==='function')persist();if(window.snapNow)snapNow('제출 시점');
   stat('제출했습니다. ('+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+')','ok');hist();
  }catch(e){stat(String(e.message||e),'err')}
  finally{busy=false;$('ssend').disabled=false}};
