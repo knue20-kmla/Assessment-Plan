@@ -1,7 +1,7 @@
 /* 제출하기: 관리자의 Apps Script 웹앱으로 JSON + PDF 를 보낸다 (저장 기능과 별개) */
 (function(){
 'use strict';
-const DEFAULT_URL='';           // 관리자가 배포한 Apps Script 웹앱 주소(…/exec)를 여기에 넣는다
+const DEFAULT_URL='https://script.google.com/macros/s/AKfycbwGKrt1WKkr98wLeHUhhGYws7LTq5x8S_Fs4eJXpYt26Pnhg-Gc3PcQMGrJA_RgQO2J8g/exec';           // 관리자가 배포한 Apps Script 웹앱 주소(…/exec)를 여기에 넣는다
 const LS_URL='plan2026-submit-url',LS_WHO='plan2026-submit-who';
 const MAX_BYTES=12*1024*1024;   // 전송 상한(JSON+PDF, base64 전)
 const url=()=>(localStorage.getItem(LS_URL)||DEFAULT_URL).trim();
