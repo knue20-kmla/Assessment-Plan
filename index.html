@@ -116,6 +116,7 @@ input[type=text]:focus,.ls:focus{background:#eef6f2;box-shadow:inset 0 0 0 1px v
 .mb .ttl{text-align:center;font-weight:bold;font-size:12pt;line-height:23pt;border-bottom:1.5pt solid #000;margin:0 -4pt 3pt -8pt}
 .mb .i{margin-left:4pt;padding-left:11pt;text-indent:-7pt}
 .rp{width:100%;table-layout:fixed;border:.8pt solid #000;margin:3pt 0 4pt}
+.rp td:first-child{text-align:center}
 .rp td{border:.5pt solid #000;padding:0 2pt;font-size:10pt;line-height:12pt;height:12.9pt}
 .pf{width:100%;table-layout:fixed;border-top:1.5pt solid #000;border-bottom:1.5pt solid #000;margin-top:4pt}
 .pf td{border:.5pt solid #000;padding:0 2pt;font-size:9pt;line-height:12pt;vertical-align:middle}
@@ -239,7 +240,7 @@ const R=t=>`<span class="red b">${t}</span>`;
 const T=(k,d='',st='')=>`<input type="text" data-k="${k}" data-d="${esc(d)}" style="${st}" spellcheck="false">`;
 const L=(k,o={})=>`<div class="ls ${o.mark?'m'+o.mark:''} ${o.hang?'hang':''} ${o.cls||''}" contenteditable="true" data-ls="1" data-k="${k}" data-d="${esc(o.d||'')}" ${o.num?`data-num="${o.num}"`:''} ${o.ph?`data-ph="${esc(o.ph)}"`:''} spellcheck="false" style="${o.st||''}"></div>`;
 const CB=(k,t,cls='')=>`<label class="cb ${cls}"><input type="checkbox" data-k="${k}"><span>${t}</span></label>`;
-const CBO=(k,t)=>`<label class="cb" style="grid-column:1/-1"><input type="checkbox" data-k="${k}"><span>${t}</span><input type="text" data-k="${k}.t" data-chk="${k}" style="width:70pt;margin-left:2pt" spellcheck="false"></label>`;
+const CBO=(k,t,span=true)=>`<label class="cb" style="${span?'grid-column:1/-1':''}"><input type="checkbox" data-k="${k}"><span>${t}</span><input type="text" data-k="${k}.t" data-chk="${k}" style="width:70pt;margin-left:2pt" spellcheck="false"></label>`;
 const btn=(act,id,t,extra='')=>`<button class="ctl noprint ${extra}" data-act="${act}" data-id="${id}">${t}</button>`;
 /* ---- 편집 가능한 문구 목록 ---- */
 const LMODE={sec2:'ga',sec7:'ga',sec8:'ga',sec4a:'raw',sec4b:'raw',sec5:'raw'};
@@ -350,26 +351,27 @@ ${['A','B','C','D','E'].map(g=>`<tr><td>${g}</td><td class="t">${L('s5.'+g,{st:'
 <tr style="border-bottom:1.5pt solid #000"><td style="line-height:15pt">최소능력<br>수행특성</td><td class="t">${L('s5.min',{st:'min-height:26pt'})}</td></tr></table>
 <div class="mb"><div class="ttl">최소성취수준 보장 지도 계획</div>
 ${listHtml('sec5')}
-<table class="rp"><colgroup><col style="width:36pt"><col style="width:222pt"><col></colgroup><tr><td>차시</td><td>학습 내용</td><td>운영 방법</td></tr>
+<table class="rp"><colgroup><col style="width:36pt"><col style="width:222pt"><col></colgroup><tr><td>차시</td><td style="text-align:center">학습 내용</td><td style="text-align:center">운영 방법</td></tr>
 ${Array.from({length:S.rep},(_,i)=>`<tr><td>${i+1}</td><td>${T('rp'+i+'.a')}</td><td>${T('rp'+i+'.b')}</td></tr>`).join('')}</table>
 <div class="noprint">${btn('addRep',0,'+ 차시 추가')}${S.rep>1?btn('delRep',0,'− 차시 삭제'):''}</div></div>`;
 
 const perfTable=(pid)=>{const ps=S.perfS[pid];const k=s=>`f${pid}.${s}`;
  const cbs1=['서·논술','구술·발표','토의·토론','프로젝트','실험·실습','포트폴리오','형성평가'].map(t=>CB(k('m.'+t),t)).join('');
- const cbs2=['자기평가','동료 평가','관찰·기록','학생 작품 평가'].map(t=>CB(k('m.'+t),t)).join('')+CBO(k('m.etc'),'기타');
- const grades=ps.grades.map(g=>`<div class="ab"><div class="gl">${T('g'+g+'.l')}</div>${L('g'+g+'.t')}${ps.grades.length>1?btn('delGrade',pid+':'+g,'×'):''}</div>`).join('');
+ const cbs2=['자기평가','동료 평가','관찰·기록','학생 작품 평가'].map(t=>CB(k('m.'+t),t)).join('')+CBO(k('m.etc'),'기타',false);
+ const gn=ps.grades.length;
+ const gradeRows=ps.grades.map((g,i)=>`<tr>${i==0?`<td class="lbl" rowspan="${gn}">평가 기준<div class="noprint">${btn('addGrade',pid,'+ 기준 행')}</div></td>`:''}<td class="gl">${T('g'+g+'.l','','text-align:center;color:#f00')}</td><td colspan="3" style="padding:1pt 3pt">${L('g'+g+'.t')}${gn>1?`<span class="noprint">${btn('delGrade',pid+':'+g,'× 이 행 삭제')}</span>`:''}</td></tr>`).join('');
  const groups=ps.groups.map(g=>{const ls=ps.lines[g];
   return ls.map((l,i)=>{const last=i==ls.length-1;const bb=last?'border-bottom:.5pt solid #000;':'';
   return `<tr>${i==0?`<td rowspan="${ls.length}" class="lbl" style="border-bottom:.5pt solid #000">${L('e'+g+'.name',{st:'text-align:center'})}<div>(<span data-c="gt.${g}"></span>점)</div><div class="noprint">${btn('addLine',pid+':'+g,'+줄')}${ls.length>1?btn('delLine',pid+':'+g,'−줄'):''}${ps.groups.length>1?btn('delGroup',pid+':'+g,'×요소'):''}</div></td>`:''}
-  <td class="dsh" style="${bb}">${L('l'+l+'.t')}</td>
+  <td class="dsh" colspan="2" style="${bb}">${L('l'+l+'.t')}</td>
   <td class="dsh" style="text-align:center;${bb}">${T('l'+l+'.s','','text-align:center')}</td>
   ${i==0?`<td rowspan="${ls.length}" style="text-align:center;border-bottom:.5pt solid #000"><span data-c="gts.${g}"></span></td>`:''}</tr>`}).join('')}).join('');
- return `<table class="pf"><colgroup><col style="width:68pt"><col><col style="width:40pt"><col style="width:42pt"></colgroup>
-<tr><td class="lbl">평가 영역</td><td colspan="3">${T(k('area'))}</td></tr>
-<tr><td class="lbl">평가 방법</td><td colspan="3" style="padding:0"><div class="ck" style="grid-template-columns:50pt 57pt 57.5pt 57.5pt 53.7pt 57.5pt 1fr">${cbs1}</div><div class="ck" style="grid-template-columns:50pt 57pt 57.5pt 77.5pt 1fr">${cbs2}</div></td></tr>
-<tr><td class="lbl" style="line-height:13pt">교육 과정<br>성취 기준</td><td colspan="3" style="padding:2pt 4pt">${L(k('cur'),{mark:2})}</td></tr>
-<tr><td class="lbl">평가 기준</td><td colspan="3" style="padding:0 2pt">${grades}<div class="noprint">${btn('addGrade',pid,'+ 기준 행')}</div></td></tr>
-<tr><td class="lbl">평가 요소</td><td style="text-align:center">채점 기준</td><td colspan="2" style="text-align:center">배점</td></tr>${groups}</table>
+ return `<table class="pf"><colgroup><col style="width:68pt"><col style="width:22pt"><col><col style="width:40pt"><col style="width:42pt"></colgroup>
+<tr><td class="lbl">평가 영역</td><td colspan="4">${T(k('area'))}</td></tr>
+<tr><td class="lbl">평가 방법</td><td colspan="4" style="padding:0"><div class="ck" style="grid-template-columns:50pt 57pt 57.5pt 57.5pt 53.7pt 57.5pt 1fr">${cbs1}</div><div class="ck" style="grid-template-columns:50pt 57pt 57.5pt 77.5pt 1fr">${cbs2}</div></td></tr>
+<tr><td class="lbl" style="line-height:13pt">교육 과정<br>성취 기준</td><td colspan="4" style="padding:2pt 4pt">${L(k('cur'),{mark:2})}</td></tr>
+${gradeRows}
+<tr><td class="lbl">평가 요소</td><td colspan="2" style="text-align:center">채점 기준</td><td colspan="2" style="text-align:center">배점</td></tr>${groups}</table>
 <div class="tt"><span class="noprint">${btn('addGroup',pid,'+ 평가 요소 추가')}</span> 배점 합계: <b data-c="pt.${pid}">0</b>점 <span class="warn noprint" data-c="pw.${pid}"></span></div>`};
 
 const HI=(k,d)=>`<input type="text" class="hin" data-k="${k}" data-d="${esc(d)}" spellcheck="false">`;
