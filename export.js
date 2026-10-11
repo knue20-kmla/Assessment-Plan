@@ -166,7 +166,7 @@ function hxCtx(){const chars=[],paras=[],bfs=[];const ck={},pk={},bk={};
   para(p){const k=[p.align,Math.round(p.left),Math.round(p.hang),Math.round(p.first),Math.round(p.before),Math.round(p.after),Math.round(p.line*20)].join('|');if(pk[k]==null){pk[k]=paras.length;paras.push(p)}return pk[k]},
   bf(b){const k=['t','r','b','l'].map(s=>b[s]?b[s].st+bcls(b[s].w)+b[s].c:'-').join('|');if(bk[k]==null){bk[k]=bfs.length;bfs.push(b)}return bk[k]}}}
 const mmList=[0.1,0.12,0.15,0.2,0.25,0.3,0.4,0.5,0.6,0.7,1.0];
-const hwMm=px=>({1:'0.12 mm',2:'0.5 mm',3:'0.7 mm',4:'1.0 mm'})[bcls(px)];
+const hwMm=px=>({1:'0.25 mm',2:'0.5 mm',3:'0.7 mm',4:'1.0 mm'})[bcls(px)];
 const hwType={solid:'SOLID',dashed:'DASH',double:'DOUBLE_SLIM',dotted:'DOT'};
 function hxHeader(base,ctx,c0,p0,b0){let h=base;
  const cx=ctx.chars.map((r,i)=>'<hh:charPr id="'+(c0+i)+'" height="'+Math.max(100,Math.round(r.sz*100))+'" textColor="#'+r.c+'" shadeColor="none" useFontSpace="0" useKerning="0" symMark="NONE" borderFillIDRef="1"><hh:fontRef hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/><hh:ratio hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:spacing hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/><hh:relSz hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:offset hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/>'+(r.i?'<hh:italic/>':'')+(r.b?'<hh:bold/>':'')+'<hh:underline type="'+(r.u?'BOTTOM':'NONE')+'" shape="SOLID" color="#000000"/><hh:strikeout shape="3D" color="#000000"/><hh:outline type="NONE"/><hh:shadow type="NONE" color="#C0C0C0" offsetX="10" offsetY="10"/></hh:charPr>').join('');
