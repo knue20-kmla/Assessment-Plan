@@ -104,7 +104,15 @@ input[type=text]:focus,.ls:focus{background:#fdf1e8;box-shadow:inset 0 0 0 1px v
 @supports (field-sizing:content){.hin{field-sizing:content;width:auto;min-width:3em;max-width:100%}}
 .hdr .hin{text-align:center;width:100%;field-sizing:fixed;font-weight:bold;font-style:italic;color:#f00}
 .sec .t .hin{font-weight:bold}
-.tl{display:flex;justify-content:center;align-items:baseline;white-space:pre}
+.tl{display:flex;justify-content:center;align-items:baseline;white-space:pre;text-align:center}
+.tl .hin{text-align:center}
+.it0{width:100%;table-layout:fixed;border-top:1.5pt solid #000;border-bottom:2pt solid #000;margin-bottom:4pt}
+.it0 td{border:.5pt solid #000;text-align:center;padding:0}
+.it0 tr.ih td{height:18pt;font-weight:bold;font-size:12.5pt;border-top:0}
+.it0 tr.iv td{height:19pt}
+.it0 td:first-child{border-left:0}.it0 td:last-child{border-right:0}
+.sec .sub{font-size:14pt;line-height:22pt;letter-spacing:.3pt;margin-left:2pt}
+.sec .sub .hin{font-weight:normal}
 .gr{width:100%;border:.8pt dashed #000;display:grid;grid-template-columns:1fr 1fr;font-size:9pt;line-height:12pt}
 .gr>div{padding:3pt 4pt 4pt 6pt;border-right:.8pt dashed #000;border-bottom:.8pt dashed #000;min-width:0}
 .gr>div:nth-child(2n){border-right:0}
@@ -206,7 +214,7 @@ input.docname:focus{border-color:var(--accent);background:#fff;box-shadow:none}
  tr,.blk,.gr>div{break-inside:avoid}
 }
 @page{size:A4;margin:24mm 20mm 20mm;
- @top-center{content:"▣ 2026학년도 학업성적관리지침 변경 사항 반영 ▣";color:#f00;font-weight:bold;font-style:italic;font-size:8.5pt}
+ @top-center{content:"▣ 2026학년도 1,2학년용 양식(학업성적관리지침 변경 사항 반영) ▣";color:#f00;font-weight:bold;font-style:italic;font-size:8.5pt}
  @bottom-center{content:"- " counter(page) " -";font-size:9.5pt}}
 </style>
 </head>
@@ -259,7 +267,7 @@ const CB=(k,t,cls='')=>`<label class="cb ${cls}"><input type="checkbox" data-k="
 const CBO=(k,t,span=true)=>`<label class="cb" style="${span?'grid-column:1/-1':''}"><input type="checkbox" data-k="${k}"><span>${t}</span><input type="text" data-k="${k}.t" data-chk="${k}" style="width:70pt;margin-left:2pt" spellcheck="false"></label>`;
 const btn=(act,id,t,extra='')=>`<button class="ctl noprint ${extra}" data-act="${act}" data-id="${id}">${t}</button>`;
 /* ---- 편집 가능한 문구 목록 ---- */
-const LMODE={sec2:'ga',sec7:'ga',sec8:'ga',sec4a:'raw',sec4b:'raw',sec5:'raw'};
+const LMODE={sec2:'ga',sec7:'ga',sec8:'ga',sec4a:'raw',sec4an:'raw',sec4b:'raw',sec4bn:'raw',sec4c:'raw',sec4d:'raw',sec5:'raw'};
 function defLists(){
  const mk=a=>a.map(([lv,h,c])=>({id:++S.uid,lv,h,c:c||''}));
  return {
@@ -277,23 +285,27 @@ function defLists(){
   [1,R('교사가 직접 학생의 활동을 관찰할 수 있는 평가를 통해 학생의 독자적 사고에 따른 결과물이 평가에 반영될 수 있도록 해야 한다.')],
   [1,R('실제 평가 상황에서 인공지능(AI) 활용이 금지되는 행위를 명확히 설정하고, 관련 유의사항을 학생·학부모에게 사전에 안내해야 한다.')],
   [0,'이 계획에 명시되지 않은 내용에 대해서는 강원특별자치도교육청 학업성적관리지침 및 본교 학업성적관리규정에 따른다.']]),
- sec4a:mk([[0,`가. ${R('정기시험')}과 수행평가의 성취도는 고정 분할 점수를 적용한 다음의 성취율에 따라 평정하며, 성취율 40% 미도달자 중 최소성취수준 보장 지도 이수 시 성취도 ‘E’를 부여한다.`]]),
- sec4b:mk([[0,'나. 보통 교과 공통 과목의 과학탐구실험 및 예술체육교과의 과목 성취도는 고정 분할 점수를 적용한 다음의 성취율에 따라 평정하며, 성취율 40% 미도달자 중 최소성취수준 보장 지도 이수 시 성취도 ‘C’를 부여한다.']]),
+ sec4a:mk([[0,'가. 공통과목의 성취도는 성취율에 따라 다음과 같이 평정한다.']]),
+ sec4an:mk([[0,'※ 성취율 40% 미도달자 중 최소 성취수준 보장지도 이수 시 성취도 ‘E’ 부여']]),
+ sec4b:mk([[0,'나. 단, 공통과목 ‘과학탐구실험’의 성취도는 원점수에 따라 다음과 같이 평정한다.']]),
+ sec4bn:mk([[0,'※ 성취율 40% 미도달자 중 최소 성취수준 보장지도 이수 시 성취도 ‘C’ 부여']]),
+ sec4c:mk([[0,'다. 선택과목의 성취도는 성취율에 따라 다음과 같이 평정한다.']]),
+ sec4d:mk([[0,'라. 단, 체육·예술 교과(군)의 과목(특수목적고등학교의 체육·예술 교과(군)의 선택과목은 해당하지 않음)의 성취도는 원점수에 따라 다음과 같이 평정한다.']]),
  sec5:mk([
   [0,'■ 대상 학생 :'],
-  [0,'- 공통과목(초중고등학교 교육과정 총론에 고시) : 학기말 과목 이수 기준 미달(최소성취 수준 40% 미만)하였거나, 1학점당 수업량(16회 기준)의 2/3 이상 출석 기준에 도달하지 않은 학생','i red'],
+  [0,'- 공통과목(초중고등학교 교육과정 총론에 고시) : 학기말 과목 이수 기준 미도달(최소성취 수준 40% 미만)하였거나, 1학점당 수업량(16회 기준)의 2/3 이상 출석 기준에 도달하지 않은 학생','i red'],
   [0,'- 선택과목 : 1학점당 수업량(16회 기준)의 2/3 이상 출석 기준에 도달하지 않은 학생','i red'],
   [0,'- 교양과목과 창의적체험활동은 최소성취수준보장지도 대상 제외)','i'],
   [0,'■ 보충 지도 시기 : 학기말 성적 산출 이후(학업성적관리위원회 심의 및 학부모 동의 직후) 방학 전 수업 유연화 기간 및 방학 기간'],
   [0,'■ 차시별 보충 지도 내용 및 방법'],
   [0,'- 1학점당 3시수(2학점 과목 6시수, 3학점 과목 9시수, 4학점 과목 12시수)','i red'],
   [0,'- 보충 지도가 끝나면 지도 교사 서명이 들어간 출석부를 학업성적관리위원회에 제출','i'],
-  [0,'- 보충 지도 운영 방법은 대면 지도(실시간 쌍방향 온라인 수업 포함), 보충과제 부여, 온라인콘텐츠(EBSi) 수강, 학습멘토링, AI디지털교과서활용지도 등이며, <b>1시간 이상 대면 지도(온라인 쌍방형 지도 포함)를 반드시 포함</b>해야 함','i']]),
+  [0,'- 보충 지도 운영 방법은 대면 지도(실시간 쌍방향 온라인 수업 포함), 보충과제 부여, 온라인컨텐츠(EBSi) 수강, 학습멘토링, AI디지털교과서활용지도 등이며, <b>1시간 이상 대면 지도(온라인 쌍방형 지도 포함)를 반드시 포함</b>해야 함','i']]),
  sec7:mk([
   [0,`정기고사의 결시자와 학적변동자의 ${R('정기시험')} 성적은 학업성적관리규정에 따른다.`],
   [0,'수행평가 미인정 결시생은 항목별로 0점을 부여할 수 있다.'],
-  [0,'수행평가 결과물 미제출이나 평가 과정에 참여하지 않고 방관한 학생에게 0점을 부여할 수 있다.'],
-  [0,'학적변동자는 이전 학교의 수행평가 성적 중 평가영역, 반영비율이 같은 것이 있을 경우 전입 전 성적을 인정한다. 이전 학교의 수행평가에 같은 항목이 없을 경우 해당 항목에 대하여 별도로 수행평가를 실시한다. 수행평가를 실시할 수 없을 경우 교과협의회를 거쳐 학업성적관리위원회의 심의를 통해 방법을 결정한다.'],
+  [0,'수행평가 결과물 미제출자나 평가 과정에 참여하지 않고 방관한 학생에게 0점을 부여할 수 있다.'],
+  [0,'학적변동자는 이전 학교의 수행평가 성적 중 평가영역, 반영비율이 같은 것이 있을 경우 전입 전 성적을 인정한다. 이전 학교의 수행평가에 같은 항목이 없을 경우 해당 항목에 대해 별도로 수행평가를 실시한다. 수행평가를 실시할 수 없는 경우 교과협의회를 거쳐 학업성적관리위원회의 심의를 통해 방법을 결정한다.'],
   [0,'학업성적관리규정에 포함되지 않은 사항은 강원특별자치도교육청 학업성적관리지침을 준용하여 교과협의회에서 결정한다.']]),
  sec8:mk([
   [0,`정기고사 미참여 학생 중 공결·병결 등 부득이한 사유로 인한 결시생의 ${R('정기시험')} 성적은 학업성적관리규정에 따른다.`],
@@ -307,9 +319,11 @@ function listHtml(name){const arr=S.lists[name],mode=LMODE[name];let n0=0,n1=0;
   if(mode==='ga'){if(it.lv===1){n1++;lab=`(${n1})`}else{n1=0;lab=(GA[n0]||'')+'.';n0++}}
   const id=name+':'+it.id;
   return `<div class="it ${mode==='ga'?'p lv'+it.lv:'raw '+(it.c||'')}" data-lid="${it.id}"><span class="lab">${lab}</span><div class="tx" contenteditable="true" spellcheck="false">${it.h}</div><span class="ctls noprint">${btn('addItem',id,'+ 항목')}${mode==='ga'&&it.lv===0?btn('addSub',id,'+ 하위'):''}${btn('delItem',id,'× 삭제')}</span></div>`}).join('')+'</div>'}
-const GTDEF={A:[['90% 이상','A'],['80% 이상~90% 미만','B'],['70% 이상~80% 미만','C'],['60% 이상~70% 미만','D'],['40% 이상~60% 미만','E'],['40% 미만','미도달']],
- B:[['80% 이상~100%','A'],['60% 이상~80% 미만','B'],['40% 이상~60% 미만','C'],['40% 미만','미도달']]};
-const gtEd=n=>`<table class="gt"><tr><td>성취율(원점수)</td><td>성취도</td></tr>${Array.from({length:S.gtn[n]},(_,i)=>{const d=GTDEF[n][i]||['',''];return `<tr><td>${T(`gt${n}.${i}.a`,d[0],'text-align:center')}</td><td>${T(`gt${n}.${i}.b`,d[1],'text-align:center')}</td></tr>`}).join('')}</table><div class="noprint">${btn('addGt',n,'+ 행 추가')}${S.gtn[n]>1?btn('delGt',n,'− 행 삭제'):''}</div>`;
+const GTDEF={A:[['90% 이상','A'],['80% 이상 ~ 90% 미만','B'],['70% 이상 ~ 80% 미만','C'],['60% 이상 ~ 70% 미만','D'],['40% 이상 ~ 60% 미만','E']],
+ B:[['80% 이상 ~ 100%','A'],['60% 이상 ~ 80% 미만','B'],['40% 이상 ~ 60% 미만','C']],
+ C:[['90% 이상','A'],['80% 이상 ~ 90% 미만','B'],['70% 이상 ~ 80% 미만','C'],['60% 이상 ~ 70% 미만','D'],['60% 미만','E']],
+ D:[['80% 이상 ~ 100%','A'],['60% 이상 ~ 80% 미만','B'],['60% 미만','C']]};
+const gtEd=n=>`<table class="gt"><tr><td>성취율</td><td>성취도</td></tr>${Array.from({length:S.gtn[n]},(_,i)=>{const d=GTDEF[n][i]||['',''];return `<tr><td>${T(`gt${n}.${i}.a`,d[0],'text-align:center')}</td><td>${T(`gt${n}.${i}.b`,d[1],'text-align:center')}</td></tr>`}).join('')}</table><div class="noprint">${btn('addGt',n,'+ 행 추가')}${S.gtn[n]>1?btn('delGt',n,'− 행 삭제'):''}</div>`;
 /* 수행평가 영역 만점 합계 100 유지 */
 function balance(ed){const cols=S.pcols,n=cols.length;if(!n)return;
  if(n===1){V['c'+cols[0]+'.pt']='100';return}
@@ -324,7 +338,16 @@ function addItem(name,iid,sub){const arr=S.lists[name],i=arr.findIndex(x=>x.id==
  let at=i+1;if(cur.lv===0)while(at<arr.length&&arr[at].lv===1)at++;
  const it={id:++S.uid,lv:sub?1:(LMODE[name]==='ga'?cur.lv:0),h:'',c:cur.c};arr.splice(at,0,it);return it.id}
 
-function ensure(){if(!S.lists)S.lists=defLists();if(!S.gtn)S.gtn={A:6,B:4};if(S.pcols.length&&!has(V['c'+S.pcols[0]+'.pt']))balance(null)}
+function ensure(){
+ if(!S.lists)S.lists=defLists();
+ if((S.ver||1)<3){const d=defLists();['sec4a','sec4b'].forEach(k=>S.lists[k]=d[k]);S.gtn={A:5,B:3,C:5,D:3};
+  Object.keys(V).forEach(k=>{if(/^gt[AB]\./.test(k))delete V[k]});
+  const sd=d.sec7;if(S.lists.sec7&&S.lists.sec7.length===sd.length){[2,3].forEach(i=>{const cur=S.lists.sec7[i];if(cur&&/미제출이나|없을 경우 교과협의회/.test(cur.h))cur.h=sd[i].h})}
+  S.lists.sec5.forEach(it=>{it.h=it.h.split('미달(최소성취').join('미도달(최소성취').split('온라인콘텐츠').join('온라인컨텐츠')});
+  S.ver=3}
+ const d2=defLists();Object.keys(d2).forEach(k=>{if(!S.lists[k])S.lists[k]=d2[k]});
+ if(!S.gtn)S.gtn={A:5,B:3,C:5,D:3};['A','B','C','D'].forEach(k=>{if(!S.gtn[k])S.gtn[k]=({A:5,B:3,C:5,D:3})[k]});
+ if(S.pcols.length&&!has(V['c'+S.pcols[0]+'.pt']))balance(null)}
 ensure();
 
 const MONTHS=['3월\n1주~\n4주','4월\n1주~\n4주','5월\n1주~\n4주','6월\n1주~\n4주','7월\n1주'];
@@ -391,13 +414,17 @@ ${gradeRows}
 <div class="tt"><span class="noprint">${btn('addGroup',pid,'+ 평가 요소 추가')}</span> 배점 합계: <b data-c="pt.${pid}">0</b>점 <span class="warn noprint" data-c="pw.${pid}"></span></div>`};
 
 const HI=(k,d)=>`<input type="text" class="hin" data-k="${k}" data-d="${esc(d)}" spellcheck="false">`;
-const SEC=(n,t)=>`<div class="sec"><div class="n">${n}</div><div class="t">${HI('sec'+n,t)}</div></div>`;
-const HDR0='▣ 2026학년도 학업성적관리지침 변경 사항 반영 ▣';
+const SEC=(n,t,sub)=>`<div class="sec"><div class="n">${n}</div><div class="t">${HI('sec'+n,t)}</div>${sub?`<div class="sub">${HI('secs'+n,sub)}</div>`:''}</div>`;
+const HDR0='▣ 2026학년도 1,2학년용 양식(학업성적관리지침 변경 사항 반영) ▣';
+const HNOTE0='1,2학년 학기별 시수 누계 기준(1학점 16시수, 2학점 32시수, 3학점 48시수, 4학점 64시수)';
 function build(){
  return `<div class="hdr">${HI('hdr',HDR0)}</div>
-<div class="tl" style="font-size:17.5pt;line-height:22pt;letter-spacing:-.2pt;margin-bottom:18pt">${HI('title','2026학년도 1학기 교수학습평가계획서')}</div>
-${SEC('Ⅰ','교수학습·평가 방법')}
-<div class="red b" style="font-size:10.5pt;margin:12pt 0 8pt;line-height:16pt">▶ <input type="text" class="hin" data-k="hnote.pre" data-d="" placeholder="1학년 한국사1" style="display:inline-block;width:auto;min-width:8em;vertical-align:baseline" spellcheck="false"> 시수 누계 기준(<input type="text" class="hin" data-k="info.credit" data-d="" placeholder="3" inputmode="numeric" style="display:inline-block;width:auto;min-width:1.2em;text-align:center;vertical-align:baseline" spellcheck="false">학점 <span data-c="s.target">–</span>시수)</div><div class="warn noprint" data-c="hwarn"></div>
+<div class="tl" style="font-size:17.5pt;line-height:22pt;letter-spacing:-.2pt;margin-bottom:14pt">${HI('title','2026학년도 1학기 교수학습평가계획서')}</div>
+<table class="it0"><colgroup><col style="width:114.5pt"><col style="width:64.5pt"><col style="width:254pt"><col></colgroup>
+<tr class="ih"><td>교과</td><td>학년</td><td>과목명</td><td>학점</td></tr>
+<tr class="iv"><td>${T('info.subj','','text-align:center;font-size:12.5pt')}</td><td>${T('info.grade','','text-align:center;font-size:12.5pt')}</td><td>${T('info.name','','text-align:center;font-size:12.5pt')}</td><td>${T('info.credit','','text-align:center;font-size:12.5pt')}</td></tr></table>
+${SEC('Ⅰ','교수학습·평가 방법','(과목별)')}
+<div class="red b" style="font-size:10.5pt;margin:12pt 0 8pt;line-height:16pt;display:flex;gap:4pt"><span>▶</span><input type="text" class="hin" data-k="hnote.txt" data-d="${esc(HNOTE0)}" style="flex:1;width:100%;font-weight:bold" spellcheck="false"></div><div class="warn noprint" data-c="hwarn"></div>
 <div>${S.periods.map(periodBlock).join('')}</div>
 <div class="noprint addrow">${btn('addPeriod',0,'+ 시기 블록 추가')}</div>
 ${SEC('Ⅱ','평가 세부 계획')}
@@ -412,8 +439,14 @@ ${SEC('Ⅱ','평가 세부 계획')}
 <div class="h">${HI('h4','4. 기준 성취율과 성취도(공통)')}</div>
 <div class="note" style="margin-top:2pt">${listHtml('sec4a')}</div>
 ${gtEd('A')}
-<div class="note" style="margin-top:8pt">${listHtml('sec4b')}</div>
+<div class="note" style="margin-top:5pt">${listHtml('sec4an')}</div>
+<div class="note" style="margin-top:14pt">${listHtml('sec4b')}</div>
 ${gtEd('B')}
+<div class="note" style="margin-top:5pt">${listHtml('sec4bn')}</div>
+<div class="note" style="margin-top:14pt">${listHtml('sec4c')}</div>
+${gtEd('C')}
+<div class="note" style="margin-top:14pt">${listHtml('sec4d')}</div>
+${gtEd('D')}
 <div class="h" style="margin-top:26pt">${HI('h5','5. 학기 단위 성취 수준과 최소성취수준 보장 지도 계획(과목별)')}</div>
 <div style="margin-top:5pt">${s5()}</div>
 <div class="h">${HI('h6','6. 수행평가 세부 기준(과목별)')}</div>
@@ -444,6 +477,7 @@ function recompute(){
  const cr=num(V['info.credit']),target=cr*16;
  let cum=0,any=false;
  S.periods.forEach(id=>{const h=V[`p${id}.hours`];if(has(h)){any=true;cum+=num(h)}setC('cum.'+id,any?fmt(cum):'')});
+ {const hn=doc.querySelector('[data-k="hnote.txt"]');if(hn&&!V['hnote.man']&&document.activeElement!==hn){const nv=cr?(has(V['info.grade'])?String(V['info.grade']).trim()+'학년 ':'')+(has(V['info.name'])?String(V['info.name']).trim()+' ':'')+'시수 누계 기준('+cr+'학점 '+target+'시수)':HNOTE0;if(hn.value!==nv)hn.value=nv;V['hnote.txt']=nv}}
  setC('hwarn',(any&&cr&&cum!==target)?`※ 시수 누계가 ${fmt(cum)}시수입니다(기준 ${target}시수).`:'');
  const E=V['t3.reg'],hasE=has(E),e=num(E);
  const sc={ms:num(V['t3.ms']),mn:num(V['t3.mn']),fs:num(V['t3.fs']),fn:num(V['t3.fn'])};
@@ -478,7 +512,7 @@ document.execCommand('defaultParagraphSeparator',false,'div');
 doc.addEventListener('input',e=>{const el=e.target;if(el.classList&&el.classList.contains('tx')){const it=el.closest('[data-lid]'),nm=el.closest('[data-list]').dataset.list;const o=S.lists[nm].find(x=>x.id===+it.dataset.lid);if(o){o.h=el.innerHTML;save()}return}const k=el.dataset&&el.dataset.k;if(!k)return;
  if(el.dataset.ls){if(!el.querySelector('div')){el.innerHTML='<div'+(el.dataset.ph?' data-ph="'+esc(el.dataset.ph)+'"':'')+'><br></div>';const r=document.createRange();r.selectNodeContents(el.firstChild);r.collapse(true);const s=getSelection();s.removeAllRanges();s.addRange(r)}V[k]=lsRead(el)}
  else if(el.type==='checkbox')V[k]=el.checked;
- else{V[k]=el.value;if(k==='hdr')applyHdr();
+ else{V[k]=el.value;if(k==='hdr')applyHdr();if(k==='hnote.txt')V['hnote.man']=has(el.value);
   if(el.dataset.chk&&has(el.value)){V[el.dataset.chk]=true;const cb=doc.querySelector(`[data-k="${el.dataset.chk}"]`);if(cb)cb.checked=true}}
  save();recompute()});
 doc.addEventListener('change',e=>{const el=e.target;const m=el.dataset&&el.dataset.k&&/^c(\d+)\.pt$/.exec(el.dataset.k);if(m){V[el.dataset.k]=el.value;balance(+m[1]);syncPt();save();recompute();return}if(el.type==='checkbox'&&el.dataset.k){V[el.dataset.k]=el.checked;save();recompute()}});
